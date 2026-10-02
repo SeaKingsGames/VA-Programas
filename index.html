@@ -1,0 +1,1416 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ECEFF3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161E" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icono-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Programas">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Programas Valle de Aragón señas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ECEFF3; --surface:#FFFFFF; --surface-2:#F3F5F8; --ink:#17202C; --muted:#566172; --line:#D5DCE4;
+  --accent:#2C52B0; --accent-ink:#FFFFFF; --accent-soft:#E1E8F8;
+  --ok:#1F7A55; --warn:#9A5800; --danger:#B3261E;
+  --font:"Atkinson Hyperlegible","Segoe UI",Roboto,system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#10161E; --surface:#19222D; --surface-2:#222C38; --ink:#E9EDF2; --muted:#A0AAB8; --line:#2E3948;
+    --accent:#8AA8FF; --accent-ink:#0E1626; --accent-soft:#1F2D4D; --ok:#46B784; --warn:#F0B35A; --danger:#FF8A80;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10161E; --surface:#19222D; --surface-2:#222C38; --ink:#E9EDF2; --muted:#A0AAB8; --line:#2E3948;
+  --accent:#8AA8FF; --accent-ink:#0E1626; --accent-soft:#1F2D4D; --ok:#46B784; --warn:#F0B35A; --danger:#FF8A80;
+  color-scheme:dark;
+}
+html{font-size:17px;scroll-padding-top:env(safe-area-inset-top,0px)}
+html.letra-grande{font-size:20px}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.45;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+body.con-sheet{overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+img{max-width:100%;display:block}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+#app{max-width:860px;margin:0 auto;min-height:100%}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--line)}
+.marca{display:flex;flex-direction:column;min-width:0}
+.marca b{font-size:1.05rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.marca span{font-size:.8rem;color:var(--muted)}
+.top-acc{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.estado{font-size:.8rem;color:var(--muted)}
+.main{padding:12px 16px calc(100px + env(safe-area-inset-bottom,0px))}
+
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:center;gap:4px;background:var(--surface);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+.nav a{flex:1;max-width:150px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border-radius:14px;color:var(--muted);text-decoration:none;font-size:.78rem;font-weight:700}
+.nav a svg.i{width:26px;height:26px}
+.nav a.on{color:var(--accent);background:var(--accent-soft)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700;padding:.55em 1em;border-radius:12px;min-height:44px;cursor:pointer;text-decoration:none;line-height:1.2;text-align:center}
+.btn.primario{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.peligro{color:var(--danger)}
+.btn.peligro-lleno{background:var(--danger);color:#fff;border-color:transparent}
+.btn.chico{min-height:38px;padding:.35em .75em;font-size:.9rem}
+.btn.icono-solo{width:44px;padding:0}
+.btn.ancho{width:100%;margin-top:12px}
+.btn.enlace{border:0;background:none;color:var(--accent);text-decoration:underline;min-height:36px}
+.btn[disabled]{opacity:.6}
+
+/* ---------- Lector: tira de fechas y hoja del día ---------- */
+.tira-fechas{position:relative;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:4px 16px 10px;scroll-snap-type:x proximity}
+.tira-fechas::-webkit-scrollbar{display:none}
+.chip-fecha{flex:0 0 auto;width:60px;display:flex;flex-direction:column;align-items:center;padding:8px 0 7px;border-radius:16px;border:1px solid var(--line);background:var(--surface);cursor:pointer;scroll-snap-align:center;line-height:1.1}
+.chip-fecha span,.chip-fecha small{font-size:.72rem;color:var(--muted)}
+.chip-fecha b{font-size:1.45rem}
+.chip-fecha.pasada{opacity:.5}
+.chip-fecha.on{background:var(--ink);color:var(--bg);border-color:var(--ink);opacity:1}
+.chip-fecha.on span,.chip-fecha.on small{color:inherit;opacity:.8}
+
+.hoja-fecha{display:flex;align-items:center;gap:14px;margin:12px 0 4px}
+.hf-num{font-size:4.6rem;font-weight:700;line-height:.82;letter-spacing:-.04em;color:var(--accent);font-variant-numeric:tabular-nums}
+.hf-txt{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.hf-txt b{font-size:1.55rem;line-height:1.05}
+.hf-txt .hf-mes{font-size:1rem;font-weight:400;color:var(--muted)}
+
+.instalar{display:grid;grid-template-columns:52px 1fr;gap:4px 12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;margin:4px 0 8px}
+.instalar img{width:52px;height:52px;border-radius:14px;grid-row:span 2}
+.instalar b{line-height:1.25}
+.instalar p{margin:0;font-size:.88rem;color:var(--muted)}
+.instalar p svg.i{width:18px;height:18px;vertical-align:-3px;color:var(--accent)}
+.instalar .acciones{grid-column:1/-1;margin-top:8px}
+
+/* ---------- Bloques de programa ---------- */
+.bloque{--c:var(--accent);background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:20px;padding:14px 14px 16px;margin:14px 0}
+.bloque-tit{display:flex;align-items:center;gap:10px;font-size:1.1rem;line-height:1.2;margin:0 0 12px}
+.tit-ico,.item-ico,.parte-ico,.asig-ico{display:grid;place-items:center;flex-shrink:0;border-radius:12px;background:var(--surface-2)}
+.tit-ico{width:40px;height:40px;font-size:1.35rem;background:color-mix(in srgb,var(--c) 15%,var(--surface))}
+.tit-ico img,.item-ico img,.parte-ico img,.asig-ico img{width:26px;height:26px;object-fit:contain}
+.bloque-sub{font-size:.88rem;color:var(--muted);margin:-8px 0 12px 50px}
+.roles{display:flex;flex-wrap:wrap;gap:16px 20px}
+.rol{display:flex;flex-direction:column;gap:6px;min-width:0}
+.rol-cab{display:flex;align-items:center;gap:6px;font-size:.88rem;font-weight:700;color:var(--muted)}
+.rol-cab .ico{font-size:1.1rem}
+.rol-cab .ico-img{width:20px;height:20px;object-fit:contain}
+.rol-texto{margin:0;font-weight:700}
+.caras{display:flex;flex-wrap:wrap;gap:10px}
+
+.cara{--w:88px;width:var(--w);margin:0;text-align:center}
+.cara[data-act]{cursor:pointer}
+.cara .foto{position:relative;width:100%;aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:var(--surface-2)}
+.cara .foto img{width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.cara figcaption{margin-top:5px;line-height:1.2}
+.cara figcaption .n{font-size:.84rem;font-weight:700;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.cara figcaption small{display:block;color:var(--muted);font-size:.74rem}
+.cara.p{--w:64px}
+.cara.p .foto{border-radius:12px}
+.cara.p figcaption .n{font-size:.74rem}
+.cara.g{--w:84px}
+.cara.xl{--w:170px;margin:0 auto}
+.cara.xl .foto{border-radius:24px}
+.cara.xl figcaption .n{font-size:1.3rem}
+.iniciales{width:100%;height:100%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:1.5em;background:hsl(var(--h) 40% 42%)}
+.cara.p .iniciales{font-size:1.05em}
+.cara.xl .iniciales{font-size:3em}
+.badge{position:absolute;right:5px;bottom:5px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--surface);font-size:1rem;box-shadow:0 0 0 2px var(--c,var(--accent))}
+.badge img{width:20px;height:20px;object-fit:contain}
+.turno{position:absolute;left:4px;top:4px;padding:1px 7px;border-radius:999px;background:var(--c,var(--accent));color:#fff;font-size:.72rem;font-weight:700}
+
+.mini-caras{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.carita{width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--surface-2);display:block}
+.carita img{width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.carita .iniciales{font-size:.78rem}
+.rol-opcion .opcion-valor{font-size:1.75rem;font-weight:700;color:var(--c);line-height:1.1}
+
+.rol-para{flex-direction:row;align-items:flex-start;gap:12px;flex-basis:100%;padding:10px;border-radius:16px;background:var(--surface-2)}
+.rol-para .destino .cara{--w:80px}
+.rol-para .destino .foto{outline:3px solid var(--c);outline-offset:2px}
+.rol-para .interpretes{display:flex;flex-direction:column;gap:6px;min-width:0}
+.rol-para .interpretes .caras{gap:8px}
+.rol-para .interpretes .cara{--w:60px}
+.etq-mini{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;color:var(--muted)}
+
+/* ---------- Reunión por partes ---------- */
+.partes{margin:0 -14px -16px}
+.seccion{display:flex;align-items:center;gap:8px;margin:6px 0 0;padding:8px 14px;background:var(--s);color:#fff;font-size:.95rem;line-height:1.2}
+.parte{display:grid;grid-template-columns:42px 1fr;gap:6px 12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.parte:last-child{border-bottom:0}
+.parte-ico{width:42px;height:42px;font-size:1.3rem;background:color-mix(in srgb,var(--s) 16%,var(--surface))}
+.parte-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.parte-txt b{font-size:1rem;line-height:1.25}
+.minutos{display:inline-flex;align-items:center;gap:4px;font-size:.85rem;color:var(--muted)}
+.minutos svg.i{width:16px;height:16px}
+.parte .caras{grid-column:2}
+.nota{background:var(--surface-2);padding:10px 12px;border-radius:12px;margin:0 0 12px}
+
+/* ---------- Lector: programas y personas ---------- */
+.tira-formatos{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 6px;padding:4px 16px 8px}
+.tira-formatos::-webkit-scrollbar{display:none}
+.chip-formato{--c:var(--accent);flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px}
+.chip-formato.on{border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c);background:color-mix(in srgb,var(--c) 12%,var(--surface))}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
+.chip{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:700;font-size:.88rem;cursor:pointer;min-height:38px}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tit-prog{font-size:1.6rem;margin:12px 0 0;line-height:1.15}
+.sub-prog{color:var(--muted);margin:2px 0 8px}
+.dia{display:grid;grid-template-columns:50px 1fr;gap:8px;align-items:start;margin:12px 0}
+.dia.pasada{opacity:.55}
+.dia-cab{margin:6px 0 0;display:flex;flex-direction:column;align-items:center;line-height:1}
+.dia-cab b{font-size:1.9rem}
+.dia-cab span{font-size:.75rem;color:var(--muted);font-weight:700;margin-top:3px}
+.dia .bloque{margin:0}
+.dia .cara{--w:76px}
+
+.buscar{margin:4px 0 14px}
+.rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:16px 10px}
+.celda{background:none;border:0;padding:0;cursor:pointer;text-align:center;color:inherit;display:flex;flex-direction:column;align-items:center}
+.celda .cara{--w:100%}
+.celda.actual .foto{outline:3px solid var(--accent);outline-offset:2px}
+.celda.nueva{border:2px dashed var(--line);border-radius:16px;min-height:120px;justify-content:center;padding:8px;font-weight:700;color:var(--accent)}
+.ocupado{display:block;font-size:.7rem;color:var(--warn);line-height:1.2;margin-top:2px}
+.sin-foto{display:block;font-size:.72rem;color:var(--warn);margin-top:2px}
+
+.ficha{display:flex;flex-direction:column;align-items:center;gap:8px;margin:4px 0 14px}
+.asig{list-style:none;margin:0;padding:0}
+.asig-item{--c:var(--accent);display:grid;grid-template-columns:46px 40px 1fr;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.asig-fecha{display:flex;flex-direction:column;align-items:center;line-height:1.05}
+.asig-fecha b{font-size:1.5rem}
+.asig-fecha span{font-size:.7rem;color:var(--muted)}
+.asig-ico{width:40px;height:40px;font-size:1.25rem;background:color-mix(in srgb,var(--c) 15%,var(--surface))}
+.asig-txt b{display:block;line-height:1.25}
+.asig-txt span{font-size:.85rem;color:var(--muted)}
+details.pasadas summary{cursor:pointer;font-weight:700;padding:12px 0;color:var(--muted)}
+
+/* ---------- Hojas (sheets) ---------- */
+.capa{position:fixed;inset:0;z-index:60;background:rgb(10 15 25 / .5);display:flex;align-items:flex-end;justify-content:center}
+.sheet{position:relative;width:100%;max-width:640px;max-height:90vh;max-height:90dvh;overflow:auto;overscroll-behavior:contain;background:var(--surface);border-radius:24px 24px 0 0;padding:8px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+.sheet.entra{animation:sube .22s ease-out}
+@keyframes sube{from{transform:translateY(28px);opacity:.5}to{transform:none;opacity:1}}
+.asa{width:44px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 10px}
+.sheet-tit{font-size:1.2rem;margin:4px 0 12px;line-height:1.25}
+@media (min-width:700px){.capa{align-items:center}.sheet{border-radius:24px}}
+
+/* ---------- Editor ---------- */
+.aviso{background:var(--accent-soft);color:var(--ink);padding:10px 12px;border-radius:14px;font-size:.9rem;margin:6px 0 12px}
+.ed-cab{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 10px}
+.ed-cab h1,.ed h1{margin:6px 0;font-size:1.6rem;line-height:1.15}
+.grupo-tit{font-size:.95rem;color:var(--muted);margin:20px 0 6px}
+.item{--c:var(--accent);display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;background:var(--surface);border:1px solid var(--line);text-decoration:none;color:var(--ink);margin:8px 0;flex:1;min-width:0}
+.item-ico{width:40px;height:40px;font-size:1.3rem;background:color-mix(in srgb,var(--c) 15%,var(--surface))}
+.item-txt{display:flex;flex-direction:column;min-width:0;flex:1}
+.item-txt span{font-size:.85rem;color:var(--muted)}
+.item-wrap{display:flex;align-items:center;gap:6px}
+.orden{display:flex;flex-direction:column;gap:4px}
+.pill{display:inline-block;font-size:.75rem;font-weight:700;padding:.2em .7em;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.pill.borrador{background:color-mix(in srgb,var(--warn) 18%,var(--surface));color:var(--warn)}
+.volver{display:inline-flex;align-items:center;gap:4px;font-weight:700;text-decoration:none;margin:4px 0 8px;min-height:40px}
+.ed-prog-cab{--c:var(--accent);display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.ed-prog-cab > div{flex:1;min-width:0}
+.input-titulo{width:100%;font-size:1.35rem;font-weight:700;border:0;border-bottom:2px dashed var(--line);border-radius:0;padding:4px 0;background:transparent;min-height:44px}
+.ed-prog-cab .sub{display:block;font-size:.88rem;color:var(--muted)}
+.barra{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:8px 0 14px;flex-wrap:wrap}
+.interruptor{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px 6px 6px;font-weight:700;cursor:pointer;min-height:44px;text-align:left;font-size:.9rem}
+.perilla{width:44px;height:26px;border-radius:13px;background:var(--line);position:relative;flex-shrink:0;transition:background .15s}
+.perilla::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .15s}
+.interruptor.on .perilla{background:var(--ok)}
+.interruptor.on .perilla::after{transform:translateX(18px)}
+
+.ed-fila{--c:var(--accent);background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:16px;padding:12px;margin:12px 0}
+.ed-fila-cab{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.ed-fila-cab input{width:auto;flex:0 1 180px}
+.dia-nombre{flex:1;font-weight:700}
+.ed-roles{display:flex;flex-wrap:wrap;gap:14px 18px}
+.ed-rol{display:flex;flex-direction:column;gap:6px}
+.ed-rol.ancho{flex-basis:100%}
+.slots{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}
+.slot{background:none;border:0;padding:0;cursor:pointer;width:64px;text-align:center;color:inherit}
+.slot-vacio{position:relative;display:grid;place-items:center;aspect-ratio:4/5;width:64px;border:2px dashed var(--line);border-radius:12px;font-size:1.6rem;color:var(--muted)}
+.slot-vacio small{position:absolute;top:3px;left:5px;font-size:.7rem;font-weight:700}
+.slot-nom{display:block;font-size:.74rem;color:var(--muted);margin-top:5px}
+.segmentado{display:flex;flex-wrap:wrap;gap:6px}
+.segmentado button{padding:8px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:700;cursor:pointer;min-height:44px}
+.segmentado button.on{background:var(--c);border-color:var(--c);color:#fff}
+
+.ed-parte{--s:var(--accent);background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--s);border-radius:16px;padding:12px;margin:12px 0;display:flex;flex-direction:column;gap:8px}
+.fila-campos{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fila-campos > input,.fila-campos > select{flex:1 1 140px;min-width:0}
+.fila-campos > input.min{flex:0 0 84px}
+.btn-ico{width:44px;height:44px;flex-shrink:0;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);font-size:1.3rem;display:grid;place-items:center;cursor:pointer;padding:0}
+.btn-ico.grande{width:56px;height:56px;font-size:1.7rem}
+.btn-ico img{width:28px;height:28px;object-fit:contain}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden;align-self:center}
+.stepper button{width:42px;height:42px;border:0;background:var(--surface-2);font-size:1.2rem;cursor:pointer}
+.stepper span{min-width:34px;text-align:center;font-weight:700}
+.mover{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.check{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:700}
+.check input{width:22px;height:22px;min-height:0;margin:0}
+.dias{display:flex;gap:6px;flex-wrap:wrap}
+.dias button{min-width:52px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:700;cursor:pointer}
+.dias button.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.swatches{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 10px}
+.swatches button{width:36px;height:36px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--line);background:var(--sw);cursor:pointer;padding:0}
+.swatches button.on{box-shadow:0 0 0 3px var(--ink)}
+.swatches.chicos button{width:28px;height:28px}
+.emojis{display:grid;grid-template-columns:repeat(auto-fill,minmax(50px,1fr));gap:6px;margin-bottom:12px}
+.emojis button{height:50px;font-size:1.5rem;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer}
+.emojis button.on{outline:3px solid var(--accent)}
+.foto-edit{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;margin-bottom:4px}
+.foto-grande{position:relative;width:150px;aspect-ratio:4/5;border-radius:22px;overflow:hidden;background:var(--surface-2);display:block}
+.foto-grande img{width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.foto-grande .iniciales{font-size:2.6rem}
+.subiendo{position:absolute;inset:0;display:grid;place-items:center;background:rgb(0 0 0 / .55);color:#fff;font-weight:700}
+.centro{text-align:center}
+.acciones{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
+.botones{display:flex;flex-direction:column;gap:8px}
+.ayuda{font-size:.9rem;color:var(--muted);margin:4px 0 10px}
+.etq{display:block;font-size:.85rem;color:var(--muted);font-weight:700;margin:14px 0 6px}
+.lista-opc{display:flex;flex-direction:column;gap:6px}
+.opc{--c:var(--accent);display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font-weight:700;cursor:pointer;text-align:left;min-height:50px}
+.opc.on{border-color:var(--c);box-shadow:inset 0 0 0 2px var(--c)}
+.opc small{display:block;font-weight:400;color:var(--muted)}
+.campo{display:block;margin:10px 0}
+.campo > span{display:block;font-size:.85rem;color:var(--muted);font-weight:700;margin-bottom:4px}
+input,select,textarea{width:100%;padding:.55em .7em;border:1px solid var(--line);border-radius:12px;background:var(--surface);min-height:44px}
+textarea{min-height:200px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem}
+.vacio{text-align:center;padding:40px 16px;color:var(--muted)}
+.vacio b{color:var(--ink);font-size:1.1rem}
+.vacio-mini{color:var(--muted);font-size:.92rem;grid-column:1/-1}
+.cargando{padding:70px 0;text-align:center;color:var(--muted)}
+.login{max-width:420px;margin:12px auto}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:90;max-width:calc(100% - 32px);text-align:center}
+.toast.ver{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){.sheet.entra{animation:none}.toast,.perilla,.perilla::after{transition:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+'use strict';
+
+/* =====================================================================
+   CONFIGURACIÓN
+   Normalmente se deja vacío: en Vercel la app toma los datos de las
+   variables de entorno (ver README) a través de /api/config.
+   Si no hay variables ni datos aquí, abre en MODO DEMO
+   (todo se guarda solo en ese dispositivo).
+   ===================================================================== */
+const CONFIG = {
+  SUPABASE_URL: '',
+  SUPABASE_ANON_KEY: ''
+};
+
+/* ===================== Utilidades ===================== */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-5);
+const slug = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+const clon = o => JSON.parse(JSON.stringify(o));
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+const col = c => /^#[0-9a-f]{3,8}$/i.test(c || '') ? c : '#2C52B0';
+const pad = n => String(n).padStart(2, '0');
+const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+const DIAS_C = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const MESES_C = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+const COLORES = ['#2C52B0', '#0E7490', '#2E6E73', '#1F7A55', '#55606E', '#946B00', '#C2410C', '#8A1C2B', '#7A3E9D', '#A21CAF'];
+const EMOJIS = ['🎥', '📷', '🎙️', '🔊', '💻', '🔑', '🧴', '🧹', '🧽', '🧺', '🍎', '🖐️', '🤟', '👐', '✋', '🎵', '🙏', '🎤', '📖', '📜', '💎', '🔍', '🌾', '🐑', '💬', '👥', '🚪', '🪑', '🚗', '📅', '⭐', '🌍', '🏠', '📢', '🕊️', '❤️', '🎁', '☕', '🧑‍🏫', '📋'];
+
+const isoDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseISO = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, (m || 1) - 1, d || 1); };
+const hoyISO = () => isoDate(new Date());
+const fechaLarga = s => { if (!s) return 'Sin fecha'; const d = parseISO(s); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; };
+const mesLargo = ym => { if (!ym) return ''; const [y, m] = ym.split('-').map(Number); return `${cap(MESES[m - 1])} ${y}`; };
+const mesSiguiente = ym => { const [y, m] = ym.split('-').map(Number); const d = new Date(y, m, 1); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`; };
+function fechasDelMes(ym, dias) {
+  const [y, m] = ym.split('-').map(Number); const out = []; const d = new Date(y, m - 1, 1);
+  while (d.getMonth() === m - 1) { if ((dias || []).includes(d.getDay())) out.push(isoDate(d)); d.setDate(d.getDate() + 1); }
+  return out;
+}
+function diasTexto(dias) {
+  const n = (dias || []).slice().sort((a, b) => a - b).map(d => DIAS[d]);
+  if (!n.length) return 'ningún día';
+  return n.length === 1 ? n[0] : n.slice(0, -1).join(', ') + ' y ' + n[n.length - 1];
+}
+function hue(s) { let h = 7; for (const ch of String(s)) h = (h * 31 + ch.codePointAt(0)) % 360; return h; }
+function iniciales(n) { const w = String(n || '').trim().split(/\s+/).filter(Boolean); if (!w.length) return '?'; return ((w[0][0] || '') + (w.length > 1 ? w[w.length - 1][0] : '')).toUpperCase(); }
+function mover(arr, i, d) { const j = i + d; if (i < 0 || j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; }
+function blobADataURL(b) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(b); }); }
+async function comprimir(file, max, tipo = 'image/jpeg') {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('Imagen no válida')); i.src = url; });
+    const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const w = Math.max(1, Math.round(img.naturalWidth * k)), h = Math.max(1, Math.round(img.naturalHeight * k));
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const ctx = c.getContext('2d');
+    if (tipo === 'image/jpeg') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
+    ctx.drawImage(img, 0, 0, w, h);
+    return await new Promise(res => c.toBlob(res, tipo, 0.82));
+  } finally { URL.revokeObjectURL(url); }
+}
+
+const ICON = {
+  cal: '<svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  cuadros: '<svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>',
+  gente: '<svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.8"/><path d="M16 14.6c2.8.1 4.8 1.8 5.5 5.4"/></svg>',
+  molde: '<svg class="i" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M3.5 9h17M9 9v11.5"/></svg>',
+  ajustes: '<svg class="i" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>',
+  lapiz: '<svg class="i" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>',
+  ojo: '<svg class="i" viewBox="0 0 24 24"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  reloj: '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+  atras: '<svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>',
+  compartir: '<svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v9h12v-9"/></svg>'
+};
+
+/* ===================== Datos de ejemplo (octubre 2026) ===================== */
+function ajustesBase() { return { id: 'ajustes', congregacion: 'Mi congregación', subtitulo: 'Programas y asignaciones', grupos: ['Grupo 1', 'Grupo 2', 'Grupo 3'] }; }
+
+function datosEjemplo() {
+  const P = n => 'p-' + slug(n);
+  const F = d => '2026-10-' + d;
+  const nombres = ['Leonardo Bautista', 'Joel Arana', 'Rafael Martínez', 'Juan González', 'Omar Medina', 'Oscar Benítez', 'Jesús Medina', 'Álvaro Rivera', 'Carlos Pérez', 'Jorge Zavala',
+    'Evelyn Arana', 'Adriana Rivera', 'Remedios González', 'Esther Benítez', 'Nohemí Abello', 'Yolanda Benítez', 'Evelia Bautista', 'Alejandra Fregoso', 'Deysi SantaCruz', 'Matilde Martínez',
+    'Elía Ayala', 'Patricia Rodríguez', 'Adriana P. Cruz', 'Viridiana Benítez', 'Delia Pérez', 'Amalia Luevano', 'Marlene Arana', 'Orlando Martínez', 'Carlos Horacio', 'Rosalba Muñoz'];
+  const personas = nombres.map(n => ({ id: P(n), nombre: n, foto: '', grupo: '', nota: n === 'Jorge Zavala' ? 'Orador visitante de Aeropuerto señas' : '' }));
+  const ajustes = { id: 'ajustes', congregacion: 'Valle de Aragón señas', subtitulo: 'Programas y asignaciones', grupos: ['Grupo 1', 'Grupo 2', 'Grupo 3'] };
+  const rolP = (id, nombre, icono, cantidad, extra = {}) => ({ id, nombre, icono, modo: 'personas', cantidad, opciones: [], paraPersona: '', turnos: false, ...extra });
+  const rolG = (icono) => ({ id: 'grupo', nombre: 'Le toca a', icono, modo: 'opcion', cantidad: 1, opciones: ['Grupo 1', 'Grupo 2', 'Grupo 3'], paraPersona: '', turnos: false });
+  const parte = (id, seccionId, icono, titulo, minutos, cantidad, etiquetas = '', tema = '') => ({ id, seccionId, icono, titulo, tema, minutos, cantidad, etiquetas });
+
+  const formatos = [
+    { id: 'f-publica', nombre: 'Reunión pública y Atalaya', icono: '🎤', color: '#2C52B0', tipo: 'reunion', orden: 1, dias: [6], etiquetaTurno: '', roles: [],
+      secciones: [{ id: 's-disc', nombre: 'Discurso público', color: '#2C52B0', icono: '🎤' }, { id: 's-atal', nombre: 'Estudio de La Atalaya', color: '#2E6E73', icono: '📖' }],
+      partes: [parte('b1', 's-disc', '🎵', 'Canción y oración', 5, 1, 'Presidente'), parte('b2', 's-disc', '🎤', 'Discurso público', 30, 1, 'Orador'), parte('b3', 's-disc', '🎤', 'Orador sustituto', '', 1),
+        parte('b4', 's-atal', '🎵', 'Canción', 5, 0), parte('b5', 's-atal', '📖', 'Artículo de estudio', 60, 2, 'Conductor, Lector'), parte('b6', 's-atal', '🙏', 'Canción y oración', 5, 1, 'Oración')] },
+    { id: 'f-vym', nombre: 'Vida y Ministerio', icono: '📖', color: '#55606E', tipo: 'reunion', orden: 2, dias: [5], etiquetaTurno: '', roles: [],
+      secciones: [{ id: 's-tes', nombre: 'Tesoros de la Biblia', color: '#55606E', icono: '💎' }, { id: 's-mae', nombre: 'Seamos mejores maestros', color: '#946B00', icono: '🌾' }, { id: 's-vid', nombre: 'Nuestra vida cristiana', color: '#8A1C2B', icono: '🐑' }],
+      partes: [parte('v1', '', '🎵', 'Canción y oración', 5, 1, 'Presidente'), parte('v2', 's-tes', '💎', 'Discurso', 10, 1), parte('v3', 's-tes', '🔍', 'Busquemos perlas escondidas', 10, 1), parte('v4', 's-tes', '📜', 'Lectura de la Biblia', 4, 1),
+        parte('v5', 's-mae', '🌾', 'Primera parte', 3, 2, 'Estudiante, Ayudante'), parte('v6', 's-mae', '🌾', 'Segunda parte', 4, 2, 'Estudiante, Ayudante'), parte('v7', 's-mae', '🌾', 'Tercera parte', 6, 1),
+        parte('v8', 's-vid', '🐑', 'Parte', 15, 1), parte('v9', 's-vid', '🐑', 'Estudio bíblico de la congregación', 30, 2, 'Conductor, Lector'), parte('v10', 's-vid', '🙏', 'Palabras de conclusión y oración', 3, 1)] },
+    { id: 'f-dep', nombre: 'Departamentos', icono: '🎥', color: '#0E7490', tipo: 'fechas', orden: 3, dias: [5, 6], etiquetaTurno: '', secciones: [], partes: [],
+      roles: [rolP('video', 'Video', '🎥', 1), rolP('camara', 'Cámara', '📷', 1), rolP('acom', 'Acomodadores', '🔑', 2), rolP('sani', 'Sanitización', '🧴', 1)] },
+    { id: 'f-sord', nombre: 'Interpretación a sordociegos', icono: '🖐️', color: '#7A3E9D', tipo: 'fechas', orden: 4, dias: [5, 6], etiquetaTurno: 'Turnos de media hora', secciones: [], partes: [],
+      roles: [rolP('orlando', 'Orlando Martínez', '🖐️', 3, { paraPersona: P('Orlando Martínez'), turnos: true }), rolP('carlos', 'Carlos Horacio', '🖐️', 3, { paraPersona: P('Carlos Horacio'), turnos: true }), rolP('rosalba', 'Rosalba Muñoz', '🖐️', 3, { paraPersona: P('Rosalba Muñoz'), turnos: true })] },
+    { id: 'f-limp', nombre: 'Limpieza del Salón del Reino', icono: '🧹', color: '#1F7A55', tipo: 'fechas', orden: 5, dias: [5, 6], etiquetaTurno: '', secciones: [], partes: [], roles: [rolG('🧹')] },
+    { id: 'f-hosp', nombre: 'Hospitalidad a oradores', icono: '🧺', color: '#C2410C', tipo: 'fechas', orden: 6, dias: [6], etiquetaTurno: '', secciones: [], partes: [], roles: [rolG('🧺')] }
+  ];
+
+  const dep = [['02', 'Leonardo Bautista', 'Joel Arana', ['Rafael Martínez', 'Juan González'], 'Evelyn Arana'], ['03', 'Rafael Martínez', 'Omar Medina', ['Oscar Benítez', 'Joel Arana'], 'Adriana Rivera'],
+    ['09', 'Joel Arana', 'Jesús Medina', ['Leonardo Bautista', 'Omar Medina'], 'Evelyn Arana'], ['10', 'Omar Medina', 'Leonardo Bautista', ['Oscar Benítez', 'Rafael Martínez'], 'Adriana Rivera'],
+    ['16', 'Jesús Medina', 'Rafael Martínez', ['Joel Arana', 'Juan González'], 'Evelyn Arana'], ['17', 'Leonardo Bautista', 'Rafael Martínez', ['Oscar Benítez', 'Omar Medina'], 'Adriana Rivera'],
+    ['23', 'Rafael Martínez', 'Joel Arana', ['Leonardo Bautista', 'Omar Medina'], 'Evelyn Arana'], ['24', 'Joel Arana', 'Omar Medina', ['Rafael Martínez', 'Juan González'], 'Adriana Rivera'],
+    ['30', 'Leonardo Bautista', 'Jesús Medina', ['Oscar Benítez', 'Joel Arana'], 'Evelyn Arana'], ['31', 'Omar Medina', 'Leonardo Bautista', ['Joel Arana', 'Juan González'], 'Adriana Rivera']];
+  // [turno][Orlando, Carlos Horacio, Rosalba]
+  const sord = [
+    ['02', [['Oscar Benítez', 'Álvaro Rivera', 'Remedios González'], ['Omar Medina', '', 'Esther Benítez'], ['Jesús Medina', 'Carlos Pérez', 'Nohemí Abello']]],
+    ['03', [['Álvaro Rivera', 'Leonardo Bautista', 'Yolanda Benítez'], ['Juan González', 'Carlos Pérez', 'Evelia Bautista'], ['Jesús Medina', '', 'Alejandra Fregoso']]],
+    ['09', [['Juan González', 'Rafael Martínez', 'Deysi SantaCruz'], ['Oscar Benítez', '', 'Matilde Martínez'], ['Álvaro Rivera', 'Carlos Pérez', 'Elía Ayala']]],
+    ['10', [['Joel Arana', '', 'Patricia Rodríguez'], ['Carlos Pérez', 'Álvaro Rivera', 'Adriana P. Cruz'], ['Juan González', 'Jesús Medina', 'Viridiana Benítez']]],
+    ['16', [['Leonardo Bautista', '', 'Delia Pérez'], ['Omar Medina', 'Carlos Pérez', 'Amalia Luevano'], ['Oscar Benítez', 'Álvaro Rivera', 'Evelyn Arana']]],
+    ['17', [['Juan González', 'Joel Arana', 'Marlene Arana'], ['Jesús Medina', 'Carlos Pérez', 'Remedios González'], ['Álvaro Rivera', '', 'Evelia Bautista']]],
+    ['23', [['Juan González', '', 'Yolanda Benítez'], ['Jesús Medina', 'Carlos Pérez', 'Nohemí Abello'], ['Oscar Benítez', 'Álvaro Rivera', 'Matilde Martínez']]],
+    ['24', [['Leonardo Bautista', 'Oscar Benítez', 'Esther Benítez'], ['Jesús Medina', 'Carlos Pérez', 'Alejandra Fregoso'], ['Álvaro Rivera', '', 'Elía Ayala']]],
+    ['30', [['Juan González', '', 'Deysi SantaCruz'], ['Omar Medina', 'Carlos Pérez', 'Patricia Rodríguez'], ['Rafael Martínez', 'Álvaro Rivera', 'Viridiana Benítez']]],
+    ['31', [['Rafael Martínez', 'Oscar Benítez', 'Adriana P. Cruz'], ['Jesús Medina', '', 'Delia Pérez'], ['Álvaro Rivera', 'Carlos Pérez', 'Amalia Luevano']]]];
+  const limp = { '02': 'Grupo 1', '03': 'Grupo 2', '09': 'Grupo 3', '10': 'Grupo 1', '16': 'Grupo 2', '17': 'Grupo 3', '23': 'Grupo 1', '24': 'Grupo 2', '30': 'Grupo 3', '31': 'Grupo 1' };
+  const hosp = { '03': 'Grupo 3', '10': 'Grupo 1', '17': 'Grupo 2', '24': 'Grupo 3', '31': 'Grupo 1' };
+  const pp = x => x ? P(x) : null;
+  const vym = formatos[1].partes.map(x => ({ ...clon(x), id: 'w' + x.id, personas: Array(x.cantidad).fill(null) }));
+
+  const programas = [
+    { id: 'g-dep-2026-10', formatoId: 'f-dep', titulo: '', publicado: true, mes: '2026-10',
+      filas: dep.map(([d, v, c, a, s]) => ({ id: 'r' + d, fecha: F(d), valores: { video: [P(v)], camara: [P(c)], acom: a.map(P), sani: [P(s)] } })) },
+    { id: 'g-sord-2026-10', formatoId: 'f-sord', titulo: '', publicado: true, mes: '2026-10',
+      filas: sord.map(([d, t]) => ({ id: 'r' + d, fecha: F(d), valores: { orlando: t.map(x => pp(x[0])), carlos: t.map(x => pp(x[1])), rosalba: t.map(x => pp(x[2])) } })) },
+    { id: 'g-limp-2026-10', formatoId: 'f-limp', titulo: '', publicado: true, mes: '2026-10', filas: Object.entries(limp).map(([d, g]) => ({ id: 'r' + d, fecha: F(d), valores: { grupo: g } })) },
+    { id: 'g-hosp-2026-10', formatoId: 'f-hosp', titulo: '', publicado: true, mes: '2026-10', filas: Object.entries(hosp).map(([d, g]) => ({ id: 'r' + d, fecha: F(d), valores: { grupo: g } })) },
+    { id: 'g-pub-2026-10-03', formatoId: 'f-publica', titulo: '', publicado: true, fecha: '2026-10-03', nota: '',
+      partes: [
+        { ...parte('q1', 's-disc', '🎵', 'Canción y oración', 5, 1, 'Presidente'), personas: [null] },
+        { ...parte('q2', 's-disc', '🎤', 'Discurso público', 30, 1, 'Orador', 'Orador de la congregación Aeropuerto señas'), personas: [P('Jorge Zavala')] },
+        { ...parte('q3', 's-disc', '🎤', 'Orador sustituto', '', 1), personas: [null] },
+        { ...parte('q4', 's-atal', '🎵', 'Canción 79', 5, 0), personas: [] },
+        { ...parte('q5', 's-atal', '📖', 'Artículo de estudio 31', 60, 2, 'Conductor, Lector', '«Ayudemos a otros a conocer bien a Jehová»'), personas: [null, null] },
+        { ...parte('q6', 's-atal', '🙏', 'Canción 84 y oración', 5, 1, 'Oración'), personas: [null] }] },
+    { id: 'g-vym-2026-10-02', formatoId: 'f-vym', titulo: 'Semana del 28 de septiembre al 4 de octubre', publicado: false, fecha: '2026-10-02', nota: '', partes: vym }
+  ];
+  return { personas, formatos, programas, ajustes };
+}
+
+function normalizar(d) {
+  d = d || {};
+  const out = {};
+  out.personas = (d.personas || []).filter(p => p && p.id).map(p => ({ foto: '', grupo: '', nota: '', ...p, nombre: p.nombre || '' }));
+  out.formatos = (d.formatos || []).filter(f => f && f.id).map(f => ({ icono: '📋', color: '#2C52B0', tipo: 'fechas', orden: 0, dias: [], etiquetaTurno: '', roles: [], secciones: [], partes: [], ...f, nombre: f.nombre || 'Formato' }));
+  out.programas = (d.programas || []).filter(p => p && p.id).map(p => ({ titulo: '', publicado: false, filas: [], partes: [], nota: '', ...p }));
+  out.ajustes = { ...ajustesBase(), ...(d.ajustes || {}), id: 'ajustes' };
+  if (!Array.isArray(out.ajustes.grupos)) out.ajustes.grupos = [];
+  return out;
+}
+
+/* ===================== Almacenamiento (demo / Supabase vía Vercel) =====================
+   Lectores: leen directo de Supabase con la clave pública (solo ven lo publicado).
+   Editores: todo pasa por /api/editar, que revisa la contraseña de la variable
+   CLAVE_EDITORES en Vercel. La contraseña nunca está en esta página. */
+const DEMO_KEY = 'agenda-senas-demo-v1';
+const TOKEN_KEY = 'agenda-token-editor';
+const Store = {
+  nube: false, url: '', clavePublica: '', token: '', editor: false,
+  async iniciar() {
+    let url = CONFIG.SUPABASE_URL, k = CONFIG.SUPABASE_ANON_KEY;
+    if (!url || !k) {
+      try { const r = await fetch('api/config', { cache: 'no-store' }); if (r.ok) { const c = await r.json(); url = c.url; k = c.anonKey; } } catch (e) { }
+    }
+    if (!url || !k) return;
+    this.nube = true; this.url = String(url).replace(/\/+$/, ''); this.clavePublica = k;
+    let t = ''; try { t = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || ''; } catch (e) { }
+    if (t && Number(t.split('.')[0]) > Date.now()) { this.token = t; this.editor = true; } else this.olvidar();
+  },
+  cabecerasPublicas() { const h = { apikey: this.clavePublica }; if (/^eyJ/.test(this.clavePublica)) h.Authorization = 'Bearer ' + this.clavePublica; return h; },
+  async api(accion, datos = {}) {
+    let r;
+    try {
+      r = await fetch('api/editar', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: 'Bearer ' + this.token } : {}) }, body: JSON.stringify({ accion, ...datos }) });
+    } catch (e) { const err = new Error('Sin conexión con el servidor.'); err.red = true; throw err; }
+    let j = {}; try { j = await r.json(); } catch (e) { }
+    if (r.status === 401 && accion !== 'entrar') { this.olvidar(); setTimeout(render, 0); }
+    if (!r.ok) { const err = new Error(j.error || ('Error ' + r.status)); err.status = r.status; throw err; }
+    return j;
+  },
+  olvidar() { this.token = ''; this.editor = false; try { localStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(TOKEN_KEY); } catch (e) { } },
+  async entrar(clave, recordar) {
+    const j = await this.api('entrar', { clave });
+    this.token = j.token; this.editor = true;
+    try { (recordar ? localStorage : sessionStorage).setItem(TOKEN_KEY, j.token); } catch (e) { }
+  },
+  async salir() { this.olvidar(); },
+  async cargar() {
+    if (!this.nube) {
+      let d = null;
+      try { d = JSON.parse(localStorage.getItem(DEMO_KEY) || 'null'); } catch (e) { d = null; }
+      if (!d) { d = datosEjemplo(); this._guardarDemo(d); }
+      return d;
+    }
+    let filas = null;
+    if (this.editor) {
+      try { filas = (await this.api('leer')).filas; }
+      catch (e) { if (e.status === 401) toast('Tu sesión terminó. Entra de nuevo para editar.'); else if (!e.red) throw e; }
+    }
+    if (!filas) {
+      const r = await fetch(`${this.url}/rest/v1/registros?select=id,coleccion,data`, { headers: this.cabecerasPublicas() });
+      if (!r.ok) throw new Error('Supabase respondió ' + r.status);
+      filas = await r.json();
+    }
+    const d = { personas: [], formatos: [], programas: [], ajustes: null };
+    for (const f of filas) { if (f.coleccion === 'ajustes') d.ajustes = f.data; else if (d[f.coleccion]) d[f.coleccion].push(f.data); }
+    return d;
+  },
+  _guardarDemo(d) {
+    try { localStorage.setItem(DEMO_KEY, JSON.stringify({ personas: d.personas, formatos: d.formatos, programas: d.programas, ajustes: d.ajustes })); return true; }
+    catch (e) { toast('No hay espacio en este dispositivo. Usa fotos más pequeñas o conecta Supabase.'); return false; }
+  },
+  _fila(col, obj) { return { id: obj.id, coleccion: col, data: obj }; },
+  async guardar(col, obj) {
+    if (!this.nube) { this._guardarDemo(S); return; }
+    await this.api('guardar', { filas: [this._fila(col, obj)] });
+  },
+  async borrar(id) {
+    if (!this.nube) { this._guardarDemo(S); return; }
+    await this.api('borrar', { ids: [id] });
+  },
+  async _subirB64(tipo, base64) { return (await this.api('subir-foto', { tipo, base64 })).url; },
+  async subirFoto(blob) {
+    if (!this.nube) return await blobADataURL(blob);
+    const u = await blobADataURL(blob);
+    return this._subirB64(blob.type, u.split(',')[1]);
+  },
+  async reemplazarTodo(d) {
+    if (!this.nube) { this._guardarDemo(d); return; }
+    // Las fotos e íconos que vienen dentro de un respaldo del demo se suben como archivos
+    const conIcono = [...d.formatos, ...d.formatos.flatMap(f => [...(f.roles || []), ...(f.secciones || []), ...(f.partes || [])]), ...d.programas.flatMap(p => p.partes || [])];
+    const pendientesFoto = [...d.personas.map(o => [o, 'foto']), ...conIcono.map(o => [o, 'icono'])].filter(([o, k]) => /^data:image\//.test(o[k] || ''));
+    if (pendientesFoto.length) toast(`Subiendo ${pendientesFoto.length} imágenes…`);
+    for (const [o, k] of pendientesFoto) {
+      const [cab, b64] = o[k].split(',');
+      try { o[k] = await this._subirB64(cab.includes('png') ? 'image/png' : 'image/jpeg', b64); }
+      catch (e) { if (e.status === 401 || e.red) throw e; o[k] = ''; }
+    }
+    const filas = [...d.personas.map(o => this._fila('personas', o)), ...d.formatos.map(o => this._fila('formatos', o)), ...d.programas.map(o => this._fila('programas', o)), this._fila('ajustes', d.ajustes)];
+    await this.api('borrar-todo');
+    let lote = [], tam = 0;
+    for (const f of filas) {
+      const t = JSON.stringify(f).length;
+      if (lote.length && (tam + t > 2500000 || lote.length >= 200)) { await this.api('guardar', { filas: lote }); lote = []; tam = 0; }
+      lote.push(f); tam += t;
+    }
+    if (lote.length) await this.api('guardar', { filas: lote });
+  }
+};
+
+/* ===================== Estado ===================== */
+const S = { personas: [], formatos: [], programas: [], ajustes: ajustesBase() };
+const UI = { cargando: true, error: '', fecha: null, formatoLector: null, programaLector: null, buscar: '', editId: null, sheet: null, letra: 'normal', guardado: '', np: null, pk: null, ic: null, cf: null, dp: null, subiendo: false };
+const persona = id => id ? S.personas.find(p => p.id === id) : null;
+const formato = id => S.formatos.find(f => f.id === id);
+const programa = id => S.programas.find(p => p.id === id);
+const ordenados = arr => [...arr].sort((a, b) => (a.orden || 0) - (b.orden || 0));
+const porNombre = (a, b) => (a.nombre || '').localeCompare(b.nombre || '', 'es');
+const seccionDe = (f, id) => (f.secciones || []).find(s => s.id === id);
+function asignar(d) { const n = normalizar(d); S.personas = n.personas; S.formatos = n.formatos; S.programas = n.programas; S.ajustes = n.ajustes; }
+
+/* Guardado con espera corta (autoguardado) */
+const pendientes = new Map(); let tGuardar = null;
+function estado(t) { UI.guardado = t; const e = $('#estado-guardado'); if (e) e.textContent = t; }
+function guardarLuego(colec, obj) { if (!colec || !obj) return; pendientes.set(obj.id, { colec, obj }); estado('Guardando…'); clearTimeout(tGuardar); tGuardar = setTimeout(guardarYa, 600); }
+async function guardarYa() {
+  clearTimeout(tGuardar);
+  const items = [...pendientes.values()]; pendientes.clear();
+  if (!items.length) return;
+  try { for (const { colec, obj } of items) await Store.guardar(colec, obj); estado('Guardado'); }
+  catch (e) {
+    console.error(e); estado('Sin guardar');
+    if (e.status === 401) { toast('Tu sesión terminó. Entra de nuevo; los últimos cambios no se guardaron.'); return; }
+    items.forEach(it => { if (!pendientes.has(it.obj.id)) pendientes.set(it.obj.id, it); });
+    toast(e.status ? 'No se pudo guardar: ' + e.message : 'No se pudo guardar. Revisa tu conexión; se reintentará.'); tGuardar = setTimeout(guardarYa, 5000);
+  }
+}
+async function borrarRegistro(id) { try { await Store.borrar(id); } catch (e) { console.error(e); toast('No se pudo borrar en la base de datos.'); } }
+
+/* ===================== Componentes ===================== */
+function iconoHTML(ic) { if (!ic) return ''; return /^(https?:|data:|blob:)/.test(ic) ? `<img class="ico-img" src="${esc(ic)}" alt="">` : `<span class="ico" aria-hidden="true">${esc(ic)}</span>`; }
+function fotoHTML(p) { return p.foto ? `<img src="${esc(p.foto)}" alt="" loading="lazy"${/^https?:/.test(p.foto) ? ' crossorigin="anonymous"' : ''}>` : `<span class="iniciales" style="--h:${hue(p.nombre)}">${esc(iniciales(p.nombre))}</span>`; }
+function cara(p, o = {}) {
+  if (!p) return '';
+  const tocar = o.tocar ? ` data-act="ver-persona" data-id="${esc(p.id)}" role="button" tabindex="0"` : '';
+  return `<figure class="cara ${o.tam || ''}"${tocar}><div class="foto">${fotoHTML(p)}${o.turno ? `<span class="turno">${esc(o.turno)}</span>` : ''}${o.badge ? `<span class="badge">${iconoHTML(o.badge)}</span>` : ''}</div><figcaption><span class="n">${esc(p.nombre)}</span>${o.etq ? `<small>${esc(o.etq)}</small>` : ''}</figcaption></figure>`;
+}
+function carita(p) { if (!p) return ''; return `<span class="carita" title="${esc(p.nombre)}">${fotoHTML(p)}</span>`; }
+function vacio(t, extra = '') { return `<div class="vacio"><p><b>${esc(t)}</b></p>${extra}</div>`; }
+function swatches(actual, act, attrs = '', chicos = false) { return `<div class="swatches ${chicos ? 'chicos' : ''}">${COLORES.map(c => `<button class="${c.toLowerCase() === String(actual).toLowerCase() ? 'on' : ''}" style="--sw:${c}" data-act="${act}" data-v="${c}" ${attrs} aria-label="Color ${c}"></button>`).join('')}</div>`; }
+
+/* ===================== Lector ===================== */
+const publicados = () => S.programas.filter(p => p.publicado && formato(p.formatoId));
+function filaTieneDatos(f, fila) { return (f.roles || []).some(r => { const v = fila.valores && fila.valores[r.id]; return Array.isArray(v) ? v.some(id => persona(id)) : !!v; }); }
+function fechasConContenido() {
+  const set = new Set();
+  for (const p of publicados()) {
+    const f = formato(p.formatoId);
+    if (f.tipo === 'reunion') { if (p.fecha) set.add(p.fecha); }
+    else for (const fila of p.filas || []) if (fila.fecha && filaTieneDatos(f, fila)) set.add(fila.fecha);
+  }
+  return [...set].sort();
+}
+function proxima(fechas) { const h = hoyISO(); return fechas.find(f => f >= h) || fechas[fechas.length - 1]; }
+function bloquesDe(fecha) {
+  const out = [];
+  for (const p of publicados()) {
+    const f = formato(p.formatoId);
+    if (f.tipo === 'reunion') { if (p.fecha === fecha) out.push({ f, p, tipo: 'reunion' }); }
+    else { const fila = (p.filas || []).find(x => x.fecha === fecha); if (fila && filaTieneDatos(f, fila)) out.push({ f, p, fila, tipo: 'fechas' }); }
+  }
+  return out.sort((a, b) => (a.tipo === b.tipo ? 0 : a.tipo === 'reunion' ? -1 : 1) || (a.f.orden || 0) - (b.f.orden || 0));
+}
+
+function rolLector(rol, v) {
+  if (rol.modo === 'opcion') {
+    if (!v) return '';
+    const miembros = S.personas.filter(p => p.grupo && p.grupo === v).sort(porNombre);
+    return `<div class="rol rol-opcion"><div class="rol-cab">${iconoHTML(rol.icono)}<span>${esc(rol.nombre)}</span></div><div class="opcion-valor">${esc(v)}</div>${miembros.length ? `<div class="mini-caras">${miembros.map(carita).join('')}</div>` : ''}</div>`;
+  }
+  if (rol.modo === 'texto') { if (!v) return ''; return `<div class="rol"><div class="rol-cab">${iconoHTML(rol.icono)}<span>${esc(rol.nombre)}</span></div><p class="rol-texto">${esc(v)}</p></div>`; }
+  const ids = Array.isArray(v) ? v : [];
+  if (!ids.some(id => persona(id))) return '';
+  const para = rol.paraPersona && persona(rol.paraPersona);
+  const caras = ids.map((id, i) => cara(persona(id), { turno: rol.turnos ? `${i + 1}ª` : null, badge: para ? null : rol.icono, tocar: true })).join('');
+  if (para) return `<div class="rol rol-para"><div class="destino">${cara(para, { tocar: true })}</div><div class="interpretes"><span class="etq-mini">${iconoHTML(rol.icono)} Intérpretes</span><div class="caras">${caras}</div></div></div>`;
+  return `<div class="rol"><div class="rol-cab">${iconoHTML(rol.icono)}<span>${esc(rol.nombre)}</span></div><div class="caras">${caras}</div></div>`;
+}
+function bloqueFechas(f, fila, o = {}) {
+  const roles = (f.roles || []).map(r => rolLector(r, fila.valores && fila.valores[r.id])).join('');
+  if (!roles) return '';
+  const tit = o.titulo === false ? '' : `<h2 class="bloque-tit"><span class="tit-ico">${iconoHTML(f.icono)}</span>${esc(f.nombre)}</h2>${f.etiquetaTurno && (f.roles || []).some(r => r.turnos) ? `<p class="bloque-sub">${esc(f.etiquetaTurno)}</p>` : ''}`;
+  return `<section class="bloque" style="--c:${col(f.color)}">${tit}<div class="roles">${roles}</div></section>`;
+}
+function bloqueReunion(f, p, o = {}) {
+  let html = ''; let ultima = Symbol('inicio');
+  for (const pt of p.partes || []) {
+    if (pt.seccionId !== ultima) { ultima = pt.seccionId; const s = seccionDe(f, ultima); if (s) html += `<h3 class="seccion" style="--s:${col(s.color)}">${iconoHTML(s.icono)}<span>${esc(s.nombre)}</span></h3>`; }
+    const s = seccionDe(f, pt.seccionId);
+    const etqs = String(pt.etiquetas || '').split(',').map(x => x.trim());
+    const caras = (pt.personas || []).map((id, i) => cara(persona(id), { etq: etqs[i] || '', tam: 'p', tocar: true })).join('');
+    html += `<div class="parte" style="--s:${col(s ? s.color : f.color)}"><div class="parte-ico">${iconoHTML(pt.icono || (s && s.icono) || '•')}</div>
+      <div class="parte-txt"><b>${esc(pt.titulo || 'Parte')}</b>${pt.tema ? `<span>${esc(pt.tema)}</span>` : ''}${pt.minutos ? `<span class="minutos">${ICON.reloj}${esc(pt.minutos)} min</span>` : ''}</div>
+      ${caras ? `<div class="caras">${caras}</div>` : ''}</div>`;
+  }
+  const tit = o.titulo === false ? '' : `<h2 class="bloque-tit"><span class="tit-ico">${iconoHTML(f.icono)}</span>${esc(f.nombre)}</h2>${p.titulo ? `<p class="bloque-sub">${esc(p.titulo)}</p>` : ''}`;
+  return `<section class="bloque reunion" style="--c:${col(f.color)}">${tit}${p.nota ? `<p class="nota">${esc(p.nota)}</p>` : ''}<div class="partes">${html || '<p class="ayuda" style="padding:0 14px">Sin partes.</p>'}</div></section>`;
+}
+
+function lectorReuniones() {
+  const fechas = fechasConContenido();
+  if (!fechas.length) return vacio('Todavía no hay programas publicados.', '<p>Cuando un editor publique un programa, aparecerá aquí.</p>');
+  const h = hoyISO(); const prox = proxima(fechas);
+  const sel = fechas.includes(UI.fecha) ? UI.fecha : prox; UI.fecha = sel;
+  const chips = fechas.map(f => { const d = parseISO(f); return `<button class="chip-fecha ${f === sel ? 'on' : ''} ${f < h ? 'pasada' : ''}" data-act="fecha" data-f="${f}" aria-pressed="${f === sel}" aria-label="${esc(fechaLarga(f))}"><span>${DIAS_C[d.getDay()]}</span><b>${d.getDate()}</b><small>${MESES_C[d.getMonth()]}</small></button>`; }).join('');
+  const d = parseISO(sel);
+  const etiqueta = sel === h ? 'Hoy' : sel === prox ? 'Próxima reunión' : sel < h ? 'Ya pasó' : '';
+  const bloques = bloquesDe(sel).map(b => b.tipo === 'reunion' ? bloqueReunion(b.f, b.p) : bloqueFechas(b.f, b.fila)).join('');
+  return `<div id="instalar">${bannerInstalar()}</div><div class="tira-fechas" id="tira">${chips}</div>
+    <h1 class="hoja-fecha"><span class="hf-num">${d.getDate()}</span><span class="hf-txt">${etiqueta ? `<span class="pill">${etiqueta}</span>` : ''}<b>${cap(DIAS[d.getDay()])}</b><span class="hf-mes">${MESES[d.getMonth()]} ${d.getFullYear()}</span></span></h1>
+    ${bloques}`;
+}
+const claveProg = p => p.fecha || p.mes || '';
+const etiquetaPeriodo = (f, p) => f.tipo === 'reunion' ? (p.fecha ? cap(fechaLarga(p.fecha)) : (p.titulo || 'Sin fecha')) : mesLargo(p.mes);
+function lectorProgramas() {
+  const pubs = publicados();
+  const fids = new Set(pubs.map(p => p.formatoId));
+  const fs = ordenados(S.formatos.filter(f => fids.has(f.id)));
+  if (!fs.length) return vacio('Todavía no hay programas publicados.');
+  const fsel = fs.find(f => f.id === UI.formatoLector) || fs[0]; UI.formatoLector = fsel.id;
+  const progs = pubs.filter(p => p.formatoId === fsel.id).sort((a, b) => claveProg(b).localeCompare(claveProg(a)));
+  let psel = progs.find(p => p.id === UI.programaLector);
+  if (!psel) { const h = hoyISO(); psel = (fsel.tipo === 'reunion' ? [...progs].reverse().find(p => (p.fecha || '') >= h) : progs.find(p => p.mes === h.slice(0, 7))) || progs[0]; }
+  UI.programaLector = psel.id;
+  const chipsF = fs.map(f => `<button class="chip-formato ${f.id === fsel.id ? 'on' : ''}" style="--c:${col(f.color)}" data-act="ver-formato" data-id="${esc(f.id)}">${iconoHTML(f.icono)}<span>${esc(f.nombre)}</span></button>`).join('');
+  const chipsP = progs.length > 1 ? `<div class="chips">${progs.map(p => `<button class="chip ${p.id === psel.id ? 'on' : ''}" data-act="ver-programa" data-id="${esc(p.id)}">${esc(etiquetaPeriodo(fsel, p))}</button>`).join('')}</div>` : '';
+  return `<div class="tira-formatos">${chipsF}</div>${chipsP}${programaCompleto(fsel, psel)}`;
+}
+function programaCompleto(f, p) {
+  if (f.tipo === 'reunion') return `<h1 class="tit-prog">${esc(f.nombre)}</h1><p class="sub-prog">${esc(cap(fechaLarga(p.fecha)))}${p.titulo ? `<br>${esc(p.titulo)}` : ''}</p>${bloqueReunion(f, p, { titulo: false })}`;
+  const h = hoyISO();
+  const filas = [...(p.filas || [])].filter(x => x.fecha && filaTieneDatos(f, x)).sort((a, b) => a.fecha.localeCompare(b.fecha));
+  const cuerpo = filas.map(fila => { const d = parseISO(fila.fecha); return `<div class="dia ${fila.fecha < h ? 'pasada' : ''}"><h2 class="dia-cab"><b>${d.getDate()}</b><span>${DIAS_C[d.getDay()]}</span></h2>${bloqueFechas(f, fila, { titulo: false })}</div>`; }).join('');
+  return `<h1 class="tit-prog">${esc(p.titulo || f.nombre)}</h1><p class="sub-prog">${esc(mesLargo(p.mes))}${f.etiquetaTurno && (f.roles || []).some(r => r.turnos) ? `<br>${esc(f.etiquetaTurno)}` : ''}</p>${cuerpo || vacio('Este programa no tiene asignaciones.')}`;
+}
+function filtrarPersonas(q) { const n = slug(q); return [...S.personas].sort(porNombre).filter(p => !n || slug(p.nombre).includes(n)); }
+function rejillaPersonas(q, act, extra = () => '') {
+  const ps = filtrarPersonas(q);
+  if (!ps.length) return `<p class="vacio-mini">${S.personas.length ? 'No hay nadie con ese nombre.' : 'Todavía no hay personas.'}</p>`;
+  return ps.map(p => `<button class="celda" data-act="${act}" data-id="${esc(p.id)}">${cara(p)}${extra(p)}</button>`).join('');
+}
+function lectorPersonas() {
+  return `<h1 class="tit-prog">Personas</h1><p class="sub-prog">Toca una foto para ver sus asignaciones.</p>
+    <input class="buscar" type="search" placeholder="Buscar por nombre" data-input="buscar-lector" value="${esc(UI.buscar)}" aria-label="Buscar por nombre">
+    <div class="rejilla" id="rejilla">${rejillaPersonas(UI.buscar, 'ver-persona')}</div>`;
+}
+function asignacionesDe(pid) {
+  const p = persona(pid); const out = [];
+  for (const prog of publicados()) {
+    const f = formato(prog.formatoId);
+    if (f.tipo === 'reunion') {
+      (prog.partes || []).forEach(pt => {
+        const i = (pt.personas || []).indexOf(pid); if (i < 0 || !prog.fecha) return;
+        const etq = String(pt.etiquetas || '').split(',')[i]; const s = seccionDe(f, pt.seccionId);
+        out.push({ fecha: prog.fecha, f, icono: pt.icono || (s && s.icono) || f.icono, texto: (pt.titulo || 'Parte') + (etq && etq.trim() ? ` (${etq.trim()})` : ''), sub: f.nombre });
+      });
+    } else for (const fila of prog.filas || []) {
+      if (!fila.fecha) continue;
+      for (const rol of f.roles || []) {
+        const v = fila.valores && fila.valores[rol.id];
+        if (rol.modo === 'opcion') { if (p && p.grupo && v === p.grupo) out.push({ fecha: fila.fecha, f, icono: rol.icono || f.icono, texto: f.nombre, sub: v }); continue; }
+        if (rol.modo === 'texto' || !Array.isArray(v)) continue;
+        const i = v.indexOf(pid);
+        if (i >= 0) { const dest = rol.paraPersona && persona(rol.paraPersona); out.push({ fecha: fila.fecha, f, icono: rol.icono || f.icono, texto: dest ? `Interpretar a ${dest.nombre}` : rol.nombre, sub: rol.turnos ? `${f.nombre}, turno ${i + 1}` : f.nombre }); }
+        if (rol.paraPersona === pid && v.some(id => persona(id))) out.push({ fecha: fila.fecha, f, icono: rol.icono || f.icono, texto: 'Te interpretan', sub: f.nombre, caras: v.filter(id => persona(id)) });
+      }
+    }
+  }
+  return out.sort((a, b) => a.fecha.localeCompare(b.fecha));
+}
+function itemAsig(a) {
+  const d = parseISO(a.fecha);
+  return `<li class="asig-item" style="--c:${col(a.f.color)}"><div class="asig-fecha"><b>${d.getDate()}</b><span>${DIAS_C[d.getDay()]} ${MESES_C[d.getMonth()]}</span></div><div class="asig-ico">${iconoHTML(a.icono)}</div><div class="asig-txt"><b>${esc(a.texto)}</b><span>${esc(a.sub || '')}</span>${a.caras ? `<div class="mini-caras">${a.caras.map(id => carita(persona(id))).join('')}</div>` : ''}</div></li>`;
+}
+function sheetPersona(id) {
+  const p = persona(id); if (!p) return;
+  const lista = asignacionesDe(id); const h = hoyISO();
+  const prox = lista.filter(a => a.fecha >= h), pas = lista.filter(a => a.fecha < h).reverse();
+  abrirSheet(() => `<div class="ficha">${cara(p, { tam: 'xl' })}${p.grupo ? `<span class="pill">${esc(p.grupo)}</span>` : ''}</div>
+    <h2 class="sheet-tit">Próximas asignaciones</h2>
+    ${prox.length ? `<ul class="asig">${prox.map(itemAsig).join('')}</ul>` : '<p class="ayuda">No tiene asignaciones próximas.</p>'}
+    ${pas.length ? `<details class="pasadas"><summary>Anteriores (${pas.length})</summary><ul class="asig">${pas.map(itemAsig).join('')}</ul></details>` : ''}
+    <button class="btn ancho" data-act="cerrar">Cerrar</button>`);
+}
+
+/* ===================== Editor ===================== */
+function avisoDemo() { return Store.nube ? '' : '<div class="aviso">Modo demo: los cambios se guardan solo en este dispositivo. Para que la congregación los vea, conecta Supabase.</div>'; }
+function edProgramas() {
+  if (!S.formatos.length) return avisoDemo() + vacio('Todavía no hay formatos.', '<p>Crea uno nuevo, o carga el ejemplo de octubre 2026 para empezar con los de tu congregación.</p><div class="acciones" style="justify-content:center"><a class="btn" href="#/editor/ajustes">Ir a Ajustes</a><a class="btn primario" href="#/editor/formatos">Crear formato</a></div>');
+  const grupos = {};
+  for (const p of S.programas) { const k = String(p.mes || p.fecha || '').slice(0, 7); (grupos[k] = grupos[k] || []).push(p); }
+  const meses = Object.keys(grupos).sort().reverse();
+  const lista = meses.map(m => `<h2 class="grupo-tit">${m ? esc(mesLargo(m)) : 'Sin fecha'}</h2>${grupos[m].sort((a, b) => ((formato(a.formatoId) || {}).orden || 0) - ((formato(b.formatoId) || {}).orden || 0) || claveProg(a).localeCompare(claveProg(b))).map(itemPrograma).join('')}`).join('');
+  return `${avisoDemo()}<div class="ed-cab"><h1>Programas</h1><button class="btn primario" data-act="nuevo-programa">+ Nuevo</button></div>${lista || vacio('Aún no hay programas.', '<p>Crea el primero con el botón Nuevo.</p>')}`;
+}
+function itemPrograma(p) {
+  const f = formato(p.formatoId); if (!f) return '';
+  return `<a class="item" href="#/editor/programa/${esc(p.id)}" style="--c:${col(f.color)}"><span class="item-ico">${iconoHTML(f.icono)}</span><span class="item-txt"><b>${esc(p.titulo || f.nombre)}</b><span>${esc(f.tipo === 'reunion' ? cap(fechaLarga(p.fecha)) + (p.titulo ? ', ' + f.nombre : '') : mesLargo(p.mes))}</span></span><span class="pill ${p.publicado ? '' : 'borrador'}">${p.publicado ? 'Publicado' : 'Borrador'}</span></a>`;
+}
+function opcionesMes(sel) {
+  const hoy = new Date(); let out = '';
+  for (let k = -2; k <= 13; k++) { const d = new Date(hoy.getFullYear(), hoy.getMonth() + k, 1); const v = `${d.getFullYear()}-${pad(d.getMonth() + 1)}`; out += `<option value="${v}" ${v === sel ? 'selected' : ''}>${mesLargo(v)}</option>`; }
+  return out;
+}
+function sheetNuevoPrograma() {
+  const fs = ordenados(S.formatos);
+  UI.np = { formatoId: fs[0] && fs[0].id, mes: mesSiguiente(hoyISO().slice(0, 7)), fecha: hoyISO(), titulo: '' };
+  abrirSheet(() => {
+    const f = formato(UI.np.formatoId);
+    return `<h2 class="sheet-tit">Nuevo programa</h2><span class="etq">¿De qué formato?</span>
+      <div class="lista-opc">${fs.map(x => `<button class="opc ${x.id === UI.np.formatoId ? 'on' : ''}" style="--c:${col(x.color)}" data-act="np-formato" data-id="${esc(x.id)}"><span class="item-ico" style="--c:${col(x.color)}">${iconoHTML(x.icono)}</span><span>${esc(x.nombre)}<small>${x.tipo === 'reunion' ? 'Una reunión con sus partes' : 'Asignaciones del mes por fecha'}</small></span></button>`).join('')}</div>
+      ${f && f.tipo === 'reunion'
+        ? `<label class="campo"><span>Fecha de la reunión</span><input type="date" data-np="fecha" value="${UI.np.fecha}"></label><label class="campo"><span>Título (opcional)</span><input data-np="titulo" placeholder="Ej. Semana del 28 sep al 4 oct" value="${esc(UI.np.titulo)}"></label>`
+        : `<label class="campo"><span>Mes</span><select data-np="mes">${opcionesMes(UI.np.mes)}</select></label><p class="ayuda">Se crearán las fechas de cada ${esc(diasTexto(f && f.dias))} del mes. Puedes agregar o quitar fechas después.</p>`}
+      <div class="acciones"><button class="btn" data-act="cerrar">Cancelar</button><button class="btn primario" data-act="crear-programa">Crear</button></div>`;
+  });
+}
+function edPrograma(id) {
+  const p = programa(id);
+  if (!p) return vacio('Este programa ya no existe.', '<a class="btn" href="#/editor">Volver a programas</a>');
+  const f = formato(p.formatoId);
+  if (!f) return vacio('El formato de este programa fue eliminado.', '<a class="btn" href="#/editor">Volver a programas</a>');
+  UI.editId = id;
+  const cab = `<a class="volver" href="#/editor">${ICON.atras}Programas</a>
+    <div class="ed-prog-cab" style="--c:${col(f.color)}"><span class="item-ico">${iconoHTML(f.icono)}</span><div><input class="input-titulo" data-ctx="prog" data-bind="titulo" value="${esc(p.titulo)}" placeholder="${esc(f.nombre)}" aria-label="Título del programa"><span class="sub">${esc(f.tipo === 'reunion' ? f.nombre : mesLargo(p.mes))}</span></div></div>
+    <div class="barra"><button class="interruptor ${p.publicado ? 'on' : ''}" data-act="publicar" aria-pressed="${!!p.publicado}"><span class="perilla"></span>${p.publicado ? 'Publicado: lo ve la congregación' : 'Borrador: solo lo ven los editores'}</button><button class="btn chico" data-act="menu-programa">Más opciones</button></div>`;
+  return cab + (f.tipo === 'reunion' ? edReunion(f, p) : edFechas(f, p));
+}
+function slotHTML(id, act, attrs, etq) {
+  const p = persona(id);
+  return p ? `<button class="slot" data-act="${act}" ${attrs} aria-label="Cambiar a ${esc(p.nombre)}">${cara(p, { tam: 'p', turno: etq || null })}</button>`
+    : `<button class="slot" data-act="${act}" ${attrs} aria-label="Elegir persona"><span class="slot-vacio">${etq ? `<small>${esc(etq)}</small>` : ''}+</span><span class="slot-nom">Elegir</span></button>`;
+}
+function edFechas(f, p) {
+  const filas = [...(p.filas || [])].sort((a, b) => (a.fecha || '9').localeCompare(b.fecha || '9'));
+  const html = filas.map(fila => `<section class="ed-fila" style="--c:${col(f.color)}">
+      <div class="ed-fila-cab"><input type="date" data-ctx="fila" data-fila="${esc(fila.id)}" data-bind="fecha" data-rerender value="${esc(fila.fecha || '')}" aria-label="Fecha"><span class="dia-nombre">${fila.fecha ? cap(DIAS[parseISO(fila.fecha).getDay()]) : ''}</span><button class="btn chico peligro" data-act="quitar-fila" data-fila="${esc(fila.id)}">Quitar</button></div>
+      <div class="ed-roles">${(f.roles || []).map(rol => edRol(fila, rol)).join('') || '<p class="ayuda">Este formato no tiene asignaciones. Agrégalas en Formatos.</p>'}</div>
+    </section>`).join('');
+  return (html || '<p class="ayuda">No hay fechas todavía.</p>') + '<button class="btn ancho" data-act="agregar-fila">+ Agregar fecha</button>';
+}
+function edRol(fila, rol) {
+  const v = fila.valores && fila.valores[rol.id];
+  const dest = rol.paraPersona && persona(rol.paraPersona);
+  const cab = `<div class="rol-cab">${dest ? carita(dest) : iconoHTML(rol.icono)}<span>${esc(dest ? 'Para ' + dest.nombre : rol.nombre)}</span></div>`;
+  const a = `data-fila="${esc(fila.id)}" data-rol="${esc(rol.id)}"`;
+  if (rol.modo === 'opcion') return `<div class="ed-rol ancho">${cab}<div class="segmentado">${(rol.opciones || []).map(o => `<button class="${v === o ? 'on' : ''}" data-act="opcion" ${a} data-v="${esc(o)}">${esc(o)}</button>`).join('') || '<span class="ayuda">Agrega opciones en el formato.</span>'}</div></div>`;
+  if (rol.modo === 'texto') return `<div class="ed-rol ancho">${cab}<input data-ctx="valor" data-fila="${esc(fila.id)}" data-bind="${esc(rol.id)}" value="${esc(v || '')}" placeholder="Escribe aquí"></div>`;
+  const n = Math.max(1, Number(rol.cantidad) || 1); const arr = Array.isArray(v) ? v : [];
+  let slots = ''; for (let i = 0; i < n; i++) slots += slotHTML(arr[i], 'slot', `${a} data-i="${i}"`, rol.turnos ? `${i + 1}ª` : '');
+  return `<div class="ed-rol">${cab}<div class="slots">${slots}</div></div>`;
+}
+function edParteHTML(pt, i, total, secs, colorBase, ctx) {
+  const s = secs.find(x => x.id === pt.seccionId);
+  const n = Math.max(0, Number(pt.cantidad) || 0);
+  const a = `data-ctx="${ctx}" data-parte="${esc(pt.id)}"`;
+  const etqs = String(pt.etiquetas || '').split(',').map(x => x.trim());
+  let slots = '';
+  if (ctx === 'parte') for (let k = 0; k < n; k++) slots += slotHTML((pt.personas || [])[k], 'slot-parte', `${a} data-i="${k}"`, etqs[k] || '');
+  return `<section class="ed-parte" style="--s:${col(s ? s.color : colorBase)}">
+    <div class="fila-campos"><button class="btn-ico" data-act="icono-parte" ${a} aria-label="Cambiar ícono">${iconoHTML(pt.icono || (s && s.icono) || '＋')}</button>
+      <input ${a} data-bind="titulo" value="${esc(pt.titulo || '')}" placeholder="Nombre de la parte" aria-label="Nombre de la parte">
+      <input class="min" type="number" inputmode="numeric" min="0" ${a} data-bind="minutos" value="${esc(pt.minutos ?? '')}" placeholder="min" aria-label="Minutos"></div>
+    <input ${a} data-bind="tema" value="${esc(pt.tema || '')}" placeholder="Tema o detalle (opcional)" aria-label="Tema o detalle">
+    <div class="fila-campos"><select ${a} data-bind="seccionId" data-rerender aria-label="Sección"><option value="">Sin sección</option>${secs.map(x => `<option value="${esc(x.id)}" ${x.id === pt.seccionId ? 'selected' : ''}>${esc(x.nombre)}</option>`).join('')}</select>
+      <input ${a} data-bind="etiquetas" data-rerender value="${esc(pt.etiquetas || '')}" placeholder="Etiquetas: Conductor, Lector" aria-label="Etiquetas de las personas"></div>
+    <div class="slots">${slots}<span class="etq" style="margin:0">Personas</span><div class="stepper"><button data-act="parte-menos" ${a} aria-label="Una persona menos">−</button><span>${n}</span><button data-act="parte-mas" ${a} aria-label="Una persona más">+</button></div></div>
+    <div class="mover">${i > 0 ? `<button class="btn chico" data-act="parte-subir" ${a}>Subir</button>` : ''}${i < total - 1 ? `<button class="btn chico" data-act="parte-bajar" ${a}>Bajar</button>` : ''}<button class="btn chico peligro" data-act="parte-quitar" ${a}>Quitar</button></div>
+  </section>`;
+}
+function edReunion(f, p) {
+  const secs = f.secciones || []; const partes = p.partes || [];
+  return `<label class="campo"><span>Fecha de la reunión</span><input type="date" data-ctx="prog" data-bind="fecha" value="${esc(p.fecha || '')}"></label>
+    <label class="campo"><span>Nota para todos (opcional)</span><input data-ctx="prog" data-bind="nota" value="${esc(p.nota || '')}" placeholder="Ej. Visita del superintendente"></label>
+    ${partes.map((pt, i) => edParteHTML(pt, i, partes.length, secs, f.color, 'parte')).join('')}
+    <button class="btn ancho" data-act="parte-agregar" data-ctx="parte">+ Agregar parte</button>`;
+}
+
+function edPersonas() {
+  return `<div class="ed-cab"><h1>Personas</h1><button class="btn primario" data-act="persona-nueva">+ Agregar</button></div>
+    <p class="ayuda">Toca a una persona para cambiar su foto, nombre o grupo.</p>
+    <input class="buscar" type="search" placeholder="Buscar por nombre" data-input="buscar-ed" value="${esc(UI.buscar)}" aria-label="Buscar por nombre">
+    <div class="rejilla" id="rejilla">${rejillaPersonas(UI.buscar, 'persona-editar', extraEd)}</div>`;
+}
+const extraEd = p => p.foto ? '' : '<span class="sin-foto">Sin foto</span>';
+function sheetEditarPersona(id) {
+  const orig = persona(id);
+  UI.dp = orig ? clon(orig) : { id: 'p-' + uid(), nombre: '', foto: '', grupo: '', nota: '' };
+  const nueva = !orig;
+  abrirSheet(() => {
+    const p = UI.dp; if (!p) return '';
+    return `<h2 class="sheet-tit">${nueva ? 'Nueva persona' : 'Editar persona'}</h2>
+      <label class="foto-edit"><span class="foto-grande">${p.foto ? `<img src="${esc(p.foto)}" alt="">` : `<span class="iniciales" style="--h:${hue(p.nombre || '?')}">${esc(iniciales(p.nombre))}</span>`}${UI.subiendo ? '<span class="subiendo">Subiendo…</span>' : ''}</span><span class="btn chico">${p.foto ? 'Cambiar foto' : 'Agregar foto'}</span><input type="file" accept="image/*" data-change="foto-persona" hidden></label>
+      ${p.foto ? '<div class="centro"><button class="btn enlace" data-act="foto-quitar">Quitar foto</button></div>' : ''}
+      <label class="campo"><span>Nombre</span><input data-ctx="dp" data-bind="nombre" value="${esc(p.nombre)}" placeholder="Nombre y apellido" autocomplete="off"></label>
+      <label class="campo"><span>Grupo</span><select data-ctx="dp" data-bind="grupo"><option value="">Sin grupo</option>${S.ajustes.grupos.map(g => `<option value="${esc(g)}" ${g === p.grupo ? 'selected' : ''}>${esc(g)}</option>`).join('')}</select></label>
+      <label class="campo"><span>Nota (opcional)</span><input data-ctx="dp" data-bind="nota" value="${esc(p.nota || '')}" placeholder="Ej. orador visitante"></label>
+      <div class="acciones">${nueva ? '' : '<button class="btn peligro" data-act="persona-borrar">Eliminar</button>'}<button class="btn" data-act="cerrar">Cancelar</button><button class="btn primario" data-act="persona-guardar">Guardar</button></div>`;
+  }, { alCerrar: () => { UI.dp = null; } });
+}
+async function subirFotoPersona(input) {
+  const file = input.files && input.files[0]; if (!file || !UI.dp) return;
+  UI.subiendo = true; pintarSheet();
+  try { const blob = await comprimir(file, Store.nube ? 640 : 360); const url = await Store.subirFoto(blob); if (UI.dp) UI.dp.foto = url; }
+  catch (e) { console.error(e); toast('No se pudo subir la foto. Prueba con otra imagen.'); }
+  UI.subiendo = false; pintarSheet();
+}
+
+function edFormatos() {
+  const fs = ordenados(S.formatos);
+  return `<div class="ed-cab"><h1>Formatos</h1><button class="btn primario" data-act="formato-nuevo">+ Nuevo</button></div>
+    <p class="ayuda">Un formato es el molde de un programa: qué asignaciones lleva, sus íconos y colores. El orden de esta lista es el orden en que se ven en cada reunión.</p>
+    ${fs.map((f, i) => `<div class="item-wrap"><a class="item" href="#/editor/formato/${esc(f.id)}" style="--c:${col(f.color)}"><span class="item-ico">${iconoHTML(f.icono)}</span><span class="item-txt"><b>${esc(f.nombre)}</b><span>${f.tipo === 'reunion' ? `Reunión con ${(f.partes || []).length} partes` : `Por fechas, ${(f.roles || []).length} asignaciones`}</span></span></a>
+      <div class="orden">${i > 0 ? `<button class="btn-ico" data-act="formato-subir" data-id="${esc(f.id)}" aria-label="Subir">↑</button>` : ''}${i < fs.length - 1 ? `<button class="btn-ico" data-act="formato-bajar" data-id="${esc(f.id)}" aria-label="Bajar">↓</button>` : ''}</div></div>`).join('') || vacio('Aún no hay formatos.')}`;
+}
+function sheetNuevoFormato() {
+  abrirSheet(() => `<h2 class="sheet-tit">¿Qué tipo de formato?</h2><div class="lista-opc">
+    <button class="opc" data-act="formato-crear" data-tipo="fechas"><span class="item-ico">📋</span><span>Por fechas<small>Rotación del mes: departamentos, limpieza, intérpretes…</small></span></button>
+    <button class="opc" data-act="formato-crear" data-tipo="reunion"><span class="item-ico">📖</span><span>Programa de reunión<small>Partes con tiempo, tema y personas</small></span></button></div>
+    <div class="acciones"><button class="btn" data-act="cerrar">Cancelar</button></div>`);
+}
+function edFormato(id) {
+  const f = formato(id);
+  if (!f) return vacio('Este formato ya no existe.', '<a class="btn" href="#/editor/formatos">Volver a formatos</a>');
+  UI.editId = id;
+  let html = `<a class="volver" href="#/editor/formatos">${ICON.atras}Formatos</a>
+    <div class="ed-prog-cab" style="--c:${col(f.color)}"><button class="btn-ico grande" data-act="icono-formato" aria-label="Cambiar ícono">${iconoHTML(f.icono)}</button><div><input class="input-titulo" data-ctx="formato" data-bind="nombre" data-rerender value="${esc(f.nombre)}" aria-label="Nombre del formato"><span class="sub">${f.tipo === 'reunion' ? 'Programa de reunión' : 'Por fechas'}</span></div></div>
+    <span class="etq">Color</span>${swatches(f.color, 'color-formato')}`;
+  if (f.tipo === 'reunion') {
+    const secs = f.secciones || []; const partes = f.partes || [];
+    html += `<h2 class="grupo-tit">Secciones</h2><p class="ayuda">Bandas de color que agrupan partes, como Tesoros, Maestros y Vida cristiana.</p>
+      ${secs.map(s => `<section class="ed-parte" style="--s:${col(s.color)}"><div class="fila-campos"><button class="btn-ico" data-act="icono-seccion" data-sec="${esc(s.id)}" aria-label="Cambiar ícono">${iconoHTML(s.icono || '＋')}</button><input data-ctx="seccion" data-sec="${esc(s.id)}" data-bind="nombre" value="${esc(s.nombre)}" placeholder="Nombre de la sección"><button class="btn chico peligro" data-act="seccion-quitar" data-sec="${esc(s.id)}">Quitar</button></div>${swatches(s.color, 'color-seccion', `data-sec="${esc(s.id)}"`, true)}</section>`).join('')}
+      <button class="btn ancho" data-act="seccion-agregar">+ Agregar sección</button>
+      <h2 class="grupo-tit">Partes base</h2><p class="ayuda">Cada programa nuevo de este formato empieza con estas partes. Después puedes cambiarlas en cada programa.</p>
+      ${partes.map((pt, i) => edParteHTML(pt, i, partes.length, secs, f.color, 'fparte')).join('')}
+      <button class="btn ancho" data-act="parte-agregar" data-ctx="fparte">+ Agregar parte</button>`;
+  } else {
+    html += `<span class="etq">Días de reunión</span><div class="dias">${[1, 2, 3, 4, 5, 6, 0].map(d => `<button class="${(f.dias || []).includes(d) ? 'on' : ''}" data-act="dia" data-d="${d}" aria-pressed="${(f.dias || []).includes(d)}">${DIAS_C[d]}</button>`).join('')}</div>
+      <label class="campo"><span>Texto de turnos (opcional)</span><input data-ctx="formato" data-bind="etiquetaTurno" value="${esc(f.etiquetaTurno || '')}" placeholder="Ej. Turnos de media hora"></label>
+      <h2 class="grupo-tit">Asignaciones</h2>
+      ${(f.roles || []).map((r, i, arr) => edRolFormato(r, i, arr.length, f)).join('')}
+      <button class="btn ancho" data-act="rol-agregar">+ Agregar asignación</button>`;
+  }
+  const usados = S.programas.filter(p => p.formatoId === id).length;
+  html += `<div class="acciones"><button class="btn peligro" data-act="borrar-formato">Eliminar formato${usados ? ` y sus ${usados} programas` : ''}</button></div>`;
+  return html;
+}
+function edRolFormato(rol, i, total, f) {
+  const a = `data-ctx="rol" data-rol="${esc(rol.id)}"`;
+  const dest = rol.paraPersona && persona(rol.paraPersona);
+  let extra = '';
+  if (rol.modo === 'personas') {
+    extra = `<div class="fila-campos"><span class="etq" style="margin:0;flex:1">Cuántas personas</span><div class="stepper"><button data-act="rol-menos" ${a} aria-label="Menos">−</button><span>${Math.max(1, Number(rol.cantidad) || 1)}</span><button data-act="rol-mas" ${a} aria-label="Más">+</button></div></div>
+      <label class="check"><input type="checkbox" ${a} data-bind="turnos" ${rol.turnos ? 'checked' : ''}><span>Numerar turnos (1ª, 2ª, 3ª)</span></label>
+      <div class="fila-campos"><span class="etq" style="margin:0;flex:1">Es para una persona (ej. sordociego)</span>${dest ? `<button class="slot" data-act="rol-para" ${a}>${cara(dest, { tam: 'p' })}</button>` : `<button class="btn chico" data-act="rol-para" ${a}>Elegir</button>`}</div>`;
+  } else if (rol.modo === 'opcion') {
+    extra = `<label class="campo"><span>Opciones separadas por coma</span><input ${a} data-bind="opciones" data-tipo="lista" value="${esc((rol.opciones || []).join(', '))}" placeholder="Grupo 1, Grupo 2, Grupo 3"></label>
+      <button class="btn chico" data-act="rol-usar-grupos" ${a}>Usar los grupos de Ajustes</button>`;
+  }
+  return `<section class="ed-parte" style="--s:${col(f.color)}">
+    <div class="fila-campos"><button class="btn-ico" data-act="icono-rol" ${a} aria-label="Cambiar ícono">${iconoHTML(rol.icono || '＋')}</button><input ${a} data-bind="nombre" value="${esc(rol.nombre)}" placeholder="Nombre de la asignación" aria-label="Nombre de la asignación"></div>
+    <label class="campo"><span>Tipo</span><select ${a} data-bind="modo" data-rerender>
+      <option value="personas" ${rol.modo === 'personas' ? 'selected' : ''}>Personas con foto</option>
+      <option value="opcion" ${rol.modo === 'opcion' ? 'selected' : ''}>Grupo u opción (Grupo 1, 2, 3…)</option>
+      <option value="texto" ${rol.modo === 'texto' ? 'selected' : ''}>Texto libre</option></select></label>
+    ${extra}
+    <div class="mover">${i > 0 ? `<button class="btn chico" data-act="rol-subir" ${a}>Subir</button>` : ''}${i < total - 1 ? `<button class="btn chico" data-act="rol-bajar" ${a}>Bajar</button>` : ''}<button class="btn chico peligro" data-act="rol-quitar" ${a}>Quitar</button></div>
+  </section>`;
+}
+function edAjustes() {
+  const a = S.ajustes;
+  return `<h1>Ajustes</h1>
+    <label class="campo"><span>Nombre de la congregación</span><input data-ctx="ajustes" data-bind="congregacion" data-rerender value="${esc(a.congregacion)}"></label>
+    <label class="campo"><span>Texto bajo el nombre</span><input data-ctx="ajustes" data-bind="subtitulo" value="${esc(a.subtitulo)}"></label>
+    <label class="campo"><span>Grupos (separados por coma)</span><input data-ctx="ajustes" data-bind="grupos" data-tipo="lista" value="${esc(a.grupos.join(', '))}"></label>
+    <p class="ayuda">Si asignas un grupo a cada persona, en limpieza y hospitalidad aparecerán las caras de quienes forman el grupo.</p>
+    <h2 class="grupo-tit">Datos</h2>
+    <div class="aviso">${Store.nube ? 'Conectado a la base de datos. Lo que publiques lo ve toda la congregación.' : 'Modo demo: todo se guarda solo en este dispositivo. Para compartir con la congregación, conecta Supabase y Vercel (ver README).'}</div>
+    <div class="botones"><button class="btn" data-act="exportar">Exportar respaldo</button><button class="btn" data-act="importar">Importar respaldo</button><button class="btn" data-act="cargar-ejemplo">Cargar ejemplo de octubre 2026</button>${Store.nube ? '<button class="btn" data-act="salir">Cerrar sesión de editor</button>' : ''}</div>`;
+}
+function vistaLogin() {
+  return `<form class="login" data-form="login"><h1>Entrar como editor</h1><p class="ayuda">Escribe la contraseña de editores. Para ver los programas no hace falta.</p>
+    <input type="text" name="usuario" value="editor" autocomplete="username" hidden>
+    <label class="campo"><span>Contraseña</span><input type="password" name="clave" autocomplete="current-password" required></label>
+    <label class="check"><input type="checkbox" name="recordar" checked><span>Recordar en este teléfono por 30 días</span></label>
+    <button class="btn primario ancho" type="submit">Entrar</button><a class="btn ancho" href="#/">Volver a los programas</a></form>`;
+}
+
+/* ===================== Hojas: selector de persona, ícono, confirmar ===================== */
+function abrirSheet(fn, opts = {}) { UI.sheet = { fn, ...opts }; pintarSheet(true); }
+function pintarSheet(nuevo) {
+  let capa = $('#capa');
+  if (!UI.sheet) { if (capa) capa.remove(); document.body.classList.remove('con-sheet'); return; }
+  if (!capa) { capa = document.createElement('div'); capa.id = 'capa'; capa.className = 'capa'; capa.innerHTML = '<div class="sheet" role="dialog" aria-modal="true"></div>'; document.body.appendChild(capa); document.body.classList.add('con-sheet'); }
+  const sh = capa.firstChild; const scroll = sh.scrollTop;
+  sh.innerHTML = '<div class="asa" aria-hidden="true"></div>' + UI.sheet.fn();
+  if (nuevo) { sh.classList.remove('entra'); void sh.offsetWidth; sh.classList.add('entra'); sh.scrollTop = 0; } else sh.scrollTop = scroll;
+}
+function cerrarSheet() { const s = UI.sheet; UI.sheet = null; const capa = $('#capa'); if (capa) capa.remove(); document.body.classList.remove('con-sheet'); if (s && s.alCerrar) s.alCerrar(); }
+
+function ocupadosEn(fecha) {
+  const m = new Map(); if (!fecha) return m;
+  const add = (id, t) => { if (!id) return; if (!m.has(id)) m.set(id, []); m.get(id).push(t); };
+  for (const p of S.programas) {
+    const f = formato(p.formatoId); if (!f) continue;
+    if (f.tipo === 'reunion') { if (p.fecha === fecha) (p.partes || []).forEach(pt => (pt.personas || []).forEach(id => add(id, pt.titulo || 'Parte'))); }
+    else { const fila = (p.filas || []).find(x => x.fecha === fecha); if (fila) (f.roles || []).forEach(r => { const v = fila.valores && fila.valores[r.id]; if (Array.isArray(v)) v.forEach(id => add(id, r.paraPersona ? 'Intérprete' : r.nombre)); }); }
+  }
+  return m;
+}
+function elegirPersona({ titulo, actual, ocupados }) {
+  return new Promise(res => {
+    UI.pk = { q: '', res, actual, ocupados: ocupados || new Map() };
+    abrirSheet(() => `<h2 class="sheet-tit">${esc(titulo)}</h2>
+      <input class="buscar" type="search" placeholder="Buscar persona" data-input="buscar-picker" aria-label="Buscar persona">
+      <div class="rejilla" id="rejilla-pk">${rejillaPicker()}</div>
+      <div class="acciones">${actual ? '<button class="btn peligro" data-act="pk-quitar">Dejar vacío</button>' : ''}<button class="btn" data-act="cerrar">Cancelar</button></div>`,
+      { alCerrar: () => { if (UI.pk) { const r = UI.pk.res; UI.pk = null; r(undefined); } } });
+  });
+}
+function rejillaPicker() {
+  if (!UI.pk) return '';
+  const { q, actual, ocupados } = UI.pk;
+  const ps = filtrarPersonas(q);
+  let html = ps.map(p => { const oc = ocupados.get(p.id); return `<button class="celda ${p.id === actual ? 'actual' : ''}" data-act="pk-elegir" data-id="${esc(p.id)}">${cara(p, { tam: 'p' })}${oc ? `<span class="ocupado">Ya tiene: ${esc(oc.join(', '))}</span>` : ''}</button>`; }).join('');
+  if (q.trim()) html += `<button class="celda nueva" data-act="pk-nueva">+ Agregar a “${esc(q.trim())}”</button>`;
+  return html || '<p class="vacio-mini">Todavía no hay personas. Escribe un nombre para agregarla.</p>';
+}
+function resolverPicker(v) { if (!UI.pk) return; const r = UI.pk.res; UI.pk = null; cerrarSheet(); r(v); }
+
+function elegirIcono(actual) {
+  return new Promise(res => {
+    UI.ic = { res };
+    abrirSheet(() => `<h2 class="sheet-tit">Elige un ícono</h2>
+      <div class="emojis">${EMOJIS.map(e => `<button class="${e === actual ? 'on' : ''}" data-act="ic-elegir" data-v="${e}">${e}</button>`).join('')}</div>
+      <div class="fila-campos"><input id="ic-texto" maxlength="8" placeholder="Pega otro emoji" aria-label="Otro emoji"><button class="btn" data-act="ic-usar-texto">Usar</button></div>
+      <label class="btn ancho">Subir una imagen como ícono<input type="file" accept="image/*" data-change="ic-subir" hidden></label>
+      <div class="acciones"><button class="btn" data-act="cerrar">Cancelar</button></div>`,
+      { alCerrar: () => { if (UI.ic) { const r = UI.ic.res; UI.ic = null; r(undefined); } } });
+  });
+}
+function resolverIcono(v) { if (!UI.ic) return; const r = UI.ic.res; UI.ic = null; cerrarSheet(); r(v); }
+function confirmar(msg, ok = 'Eliminar') {
+  return new Promise(res => {
+    UI.cf = res;
+    abrirSheet(() => `<h2 class="sheet-tit">${esc(msg)}</h2><div class="acciones"><button class="btn" data-act="cerrar">Cancelar</button><button class="btn peligro-lleno" data-act="cf-si">${esc(ok)}</button></div>`,
+      { alCerrar: () => { if (UI.cf) { const r = UI.cf; UI.cf = null; r(false); } } });
+  });
+}
+
+/* ===================== Enlace de campos ===================== */
+function destino(el) {
+  const d = el.dataset;
+  const prog = () => programa(UI.editId), form = () => formato(UI.editId);
+  switch (d.ctx) {
+    case 'prog': { const p = prog(); return p && { obj: p, root: p, colec: 'programas' }; }
+    case 'fila': { const p = prog(); const f = p && (p.filas || []).find(x => x.id === d.fila); return f && { obj: f, root: p, colec: 'programas' }; }
+    case 'valor': { const p = prog(); const f = p && (p.filas || []).find(x => x.id === d.fila); if (!f) return null; f.valores = f.valores || {}; return { obj: f.valores, root: p, colec: 'programas' }; }
+    case 'parte': { const p = prog(); const x = p && (p.partes || []).find(y => y.id === d.parte); return x && { obj: x, root: p, colec: 'programas' }; }
+    case 'formato': { const f = form(); return f && { obj: f, root: f, colec: 'formatos' }; }
+    case 'rol': { const f = form(); const x = f && (f.roles || []).find(y => y.id === d.rol); return x && { obj: x, root: f, colec: 'formatos' }; }
+    case 'seccion': { const f = form(); const x = f && (f.secciones || []).find(y => y.id === d.sec); return x && { obj: x, root: f, colec: 'formatos' }; }
+    case 'fparte': { const f = form(); const x = f && (f.partes || []).find(y => y.id === d.parte); return x && { obj: x, root: f, colec: 'formatos' }; }
+    case 'ajustes': return { obj: S.ajustes, root: S.ajustes, colec: 'ajustes' };
+    case 'dp': return UI.dp && { obj: UI.dp, root: null, colec: null };
+  }
+  return null;
+}
+function aplicarBind(el, rerender) {
+  const t = destino(el); if (!t) return;
+  let v = el.type === 'checkbox' ? el.checked : el.value;
+  if (el.type === 'number') v = el.value === '' ? '' : Number(el.value);
+  if (el.dataset.tipo === 'lista') v = el.value.split(',').map(s => s.trim()).filter(Boolean);
+  t.obj[el.dataset.bind] = v;
+  if (t.colec) guardarLuego(t.colec, t.root);
+  if (rerender) { if (UI.sheet && el.closest('#capa')) pintarSheet(); else render(); }
+}
+function ctxPartes(el) {
+  if (el.dataset.ctx === 'fparte') { const f = formato(UI.editId); if (!f) return null; f.partes = f.partes || []; return { lista: f.partes, root: f, colec: 'formatos', prog: null }; }
+  const p = programa(UI.editId); if (!p) return null; p.partes = p.partes || []; return { lista: p.partes, root: p, colec: 'programas', prog: p };
+}
+function rolDe(el) { const f = formato(UI.editId); const r = f && (f.roles || []).find(x => x.id === el.dataset.rol); return r ? { f, r } : null; }
+
+/* ===================== Instalar como app ===================== */
+let instalarEvt = null;
+const enIframe = () => { try { return window.top !== window.self; } catch (e) { return true; } };
+const esStandalone = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } };
+const esIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const instalarOculto = () => { try { return localStorage.getItem('agenda-instalar-oculto') === '1'; } catch (e) { return false; } };
+function bannerInstalar() {
+  if (esStandalone() || enIframe() || instalarOculto() || location.protocol === 'file:') return '';
+  const cab = '<img src="icono-192.png" alt=""><b>Tenla en tu pantalla de inicio</b>';
+  if (instalarEvt) return `<div class="instalar">${cab}<p>Se abre como app y muestra los últimos programas aunque no haya internet.</p><div class="acciones"><button class="btn chico" data-act="instalar-no">Ahora no</button><button class="btn primario chico" data-act="instalar">Instalar</button></div></div>`;
+  if (esIOS()) return `<div class="instalar">${cab}<p>En Safari toca ${ICON.compartir} Compartir y luego “Agregar a inicio”.</p><div class="acciones"><button class="btn chico" data-act="instalar-no">Entendido</button></div></div>`;
+  return '';
+}
+function pintarInstalar() { const b = $('#instalar'); if (b) b.innerHTML = bannerInstalar(); }
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); instalarEvt = e; pintarInstalar(); });
+window.addEventListener('appinstalled', () => { instalarEvt = null; pintarInstalar(); toast('App instalada'); });
+if ('serviceWorker' in navigator && !enIframe() && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(e => console.warn('Sin modo sin conexión:', e)); });
+}
+
+/* ===================== Acciones ===================== */
+const A = {
+  reintentar: () => recargar(),
+  async instalar() { if (!instalarEvt) return; const e = instalarEvt; instalarEvt = null; e.prompt(); try { await e.userChoice; } catch (err) { } pintarInstalar(); },
+  'instalar-no'() { try { localStorage.setItem('agenda-instalar-oculto', '1'); } catch (e) { } pintarInstalar(); },
+  letra() { UI.letra = UI.letra === 'grande' ? 'normal' : 'grande'; try { localStorage.setItem('agenda-letra', UI.letra); } catch (e) { } aplicarLetra(); render(); },
+  fecha(el) { UI.fecha = el.dataset.f; render(); },
+  'ver-formato'(el) { UI.formatoLector = el.dataset.id; UI.programaLector = null; render(); },
+  'ver-programa'(el) { UI.programaLector = el.dataset.id; render(); },
+  'ver-persona'(el) { sheetPersona(el.dataset.id); },
+  cerrar() { cerrarSheet(); },
+  'nuevo-programa'() { sheetNuevoPrograma(); },
+  'np-formato'(el) { UI.np.formatoId = el.dataset.id; pintarSheet(); },
+  'crear-programa'() {
+    const f = formato(UI.np && UI.np.formatoId); if (!f) return toast('Elige un formato.');
+    const p = { id: 'g-' + uid(), formatoId: f.id, titulo: '', publicado: false, nota: '' };
+    if (f.tipo === 'reunion') {
+      if (!UI.np.fecha) return toast('Elige la fecha de la reunión.');
+      p.fecha = UI.np.fecha; p.titulo = (UI.np.titulo || '').trim();
+      p.partes = (f.partes || []).map(x => ({ ...clon(x), id: uid(), personas: Array(Math.max(0, Number(x.cantidad) || 0)).fill(null) }));
+    } else {
+      p.mes = UI.np.mes;
+      p.filas = fechasDelMes(p.mes, f.dias || []).map(fe => ({ id: uid(), fecha: fe, valores: {} }));
+    }
+    S.programas.push(p); guardarLuego('programas', p); cerrarSheet(); location.hash = '#/editor/programa/' + p.id;
+  },
+  publicar() { const p = programa(UI.editId); if (!p) return; p.publicado = !p.publicado; guardarLuego('programas', p); render(); toast(p.publicado ? 'Publicado' : 'Guardado como borrador'); },
+  'menu-programa'() {
+    const p = programa(UI.editId); const f = p && formato(p.formatoId); if (!f) return;
+    abrirSheet(() => `<h2 class="sheet-tit">Más opciones</h2><div class="botones">
+      <button class="btn" data-act="duplicar-programa">${f.tipo === 'reunion' ? 'Copiar a la semana siguiente' : 'Copiar al mes siguiente'}</button>
+      <button class="btn peligro" data-act="borrar-programa">Eliminar programa</button>
+      <button class="btn" data-act="cerrar">Cancelar</button></div>`);
+  },
+  'duplicar-programa'() {
+    const p = programa(UI.editId); const f = p && formato(p.formatoId); if (!f) return;
+    const n = clon(p); n.id = 'g-' + uid(); n.publicado = false;
+    if (f.tipo === 'reunion') {
+      const d = parseISO(p.fecha || hoyISO()); d.setDate(d.getDate() + 7); n.fecha = isoDate(d); n.titulo = ''; n.nota = '';
+      n.partes = (n.partes || []).map(pt => ({ ...pt, id: uid(), personas: (pt.personas || []).map(() => null) }));
+    } else {
+      n.mes = mesSiguiente(p.mes || hoyISO().slice(0, 7));
+      const viejas = [...(p.filas || [])].sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''));
+      n.filas = fechasDelMes(n.mes, f.dias || []).map((fe, i) => ({ id: uid(), fecha: fe, valores: viejas.length ? clon(viejas[i % viejas.length].valores || {}) : {} }));
+    }
+    S.programas.push(n); guardarLuego('programas', n); cerrarSheet(); location.hash = '#/editor/programa/' + n.id;
+    toast('Copia creada como borrador. Cambia lo que sea distinto.');
+  },
+  async 'borrar-programa'() {
+    const id = UI.editId;
+    if (!(await confirmar('¿Eliminar este programa? No se puede deshacer.'))) return;
+    S.programas = S.programas.filter(p => p.id !== id); pendientes.delete(id); await borrarRegistro(id); location.hash = '#/editor';
+  },
+  async slot(el) {
+    const p = programa(UI.editId); const f = p && formato(p.formatoId); if (!f) return;
+    const fila = (p.filas || []).find(x => x.id === el.dataset.fila); const rol = (f.roles || []).find(r => r.id === el.dataset.rol); if (!fila || !rol) return;
+    const i = Number(el.dataset.i); const arr = Array.isArray(fila.valores && fila.valores[rol.id]) ? [...fila.valores[rol.id]] : [];
+    const dest = rol.paraPersona && persona(rol.paraPersona);
+    const r = await elegirPersona({ titulo: `${dest ? 'Intérprete para ' + dest.nombre : rol.nombre}${rol.turnos ? `, turno ${i + 1}` : ''}`, actual: arr[i], ocupados: ocupadosEn(fila.fecha) });
+    if (r === undefined) return;
+    arr[i] = r; for (let k = 0; k < arr.length; k++) if (arr[k] === undefined) arr[k] = null;
+    fila.valores = fila.valores || {}; fila.valores[rol.id] = arr; guardarLuego('programas', p); render();
+  },
+  opcion(el) {
+    const p = programa(UI.editId); const fila = p && (p.filas || []).find(x => x.id === el.dataset.fila); if (!fila) return;
+    fila.valores = fila.valores || {}; const v = el.dataset.v;
+    fila.valores[el.dataset.rol] = fila.valores[el.dataset.rol] === v ? '' : v; guardarLuego('programas', p); render();
+  },
+  async 'quitar-fila'(el) {
+    const p = programa(UI.editId); if (!p) return;
+    if (!(await confirmar('¿Quitar esta fecha del programa?', 'Quitar'))) return;
+    p.filas = (p.filas || []).filter(x => x.id !== el.dataset.fila); guardarLuego('programas', p); render();
+  },
+  'agregar-fila'() {
+    const p = programa(UI.editId); const f = p && formato(p.formatoId); if (!f) return;
+    const fechas = (p.filas || []).map(x => x.fecha).filter(Boolean).sort();
+    let fecha = '';
+    const base = fechas.length ? parseISO(fechas[fechas.length - 1]) : (p.mes ? parseISO(p.mes + '-01') : new Date());
+    if (fechas.length) base.setDate(base.getDate() + 1);
+    for (let k = 0; k < 14; k++) { if (!(f.dias || []).length || (f.dias || []).includes(base.getDay())) { fecha = isoDate(base); break; } base.setDate(base.getDate() + 1); }
+    p.filas = p.filas || []; p.filas.push({ id: uid(), fecha, valores: {} }); guardarLuego('programas', p); render();
+  },
+  async 'slot-parte'(el) {
+    const c = ctxPartes(el); if (!c || !c.prog) return;
+    const pt = c.lista.find(x => x.id === el.dataset.parte); if (!pt) return;
+    const i = Number(el.dataset.i); const etq = (String(pt.etiquetas || '').split(',')[i] || '').trim();
+    const r = await elegirPersona({ titulo: (pt.titulo || 'Parte') + (etq ? `, ${etq}` : ''), actual: (pt.personas || [])[i], ocupados: ocupadosEn(c.prog.fecha) });
+    if (r === undefined) return;
+    pt.personas = pt.personas || []; pt.personas[i] = r; for (let k = 0; k < pt.personas.length; k++) if (pt.personas[k] === undefined) pt.personas[k] = null;
+    guardarLuego(c.colec, c.root); render();
+  },
+  'parte-mas'(el) { const c = ctxPartes(el); const pt = c && c.lista.find(x => x.id === el.dataset.parte); if (!pt) return; pt.cantidad = Math.min(12, (Number(pt.cantidad) || 0) + 1); if (c.prog) { pt.personas = pt.personas || []; while (pt.personas.length < pt.cantidad) pt.personas.push(null); } guardarLuego(c.colec, c.root); render(); },
+  'parte-menos'(el) { const c = ctxPartes(el); const pt = c && c.lista.find(x => x.id === el.dataset.parte); if (!pt) return; pt.cantidad = Math.max(0, (Number(pt.cantidad) || 0) - 1); if (c.prog) pt.personas = (pt.personas || []).slice(0, pt.cantidad); guardarLuego(c.colec, c.root); render(); },
+  'parte-subir'(el) { const c = ctxPartes(el); if (!c) return; mover(c.lista, c.lista.findIndex(x => x.id === el.dataset.parte), -1); guardarLuego(c.colec, c.root); render(); },
+  'parte-bajar'(el) { const c = ctxPartes(el); if (!c) return; mover(c.lista, c.lista.findIndex(x => x.id === el.dataset.parte), 1); guardarLuego(c.colec, c.root); render(); },
+  async 'parte-quitar'(el) { const c = ctxPartes(el); if (!c) return; if (!(await confirmar('¿Quitar esta parte?', 'Quitar'))) return; const i = c.lista.findIndex(x => x.id === el.dataset.parte); if (i >= 0) c.lista.splice(i, 1); guardarLuego(c.colec, c.root); render(); },
+  'parte-agregar'(el) {
+    const c = ctxPartes(el); if (!c) return;
+    const ult = c.lista[c.lista.length - 1];
+    const nueva = { id: uid(), seccionId: ult ? ult.seccionId : '', icono: '', titulo: '', tema: '', minutos: '', cantidad: 1, etiquetas: '' };
+    if (c.prog) nueva.personas = [null];
+    c.lista.push(nueva); guardarLuego(c.colec, c.root); render();
+  },
+  async 'icono-parte'(el) { const c = ctxPartes(el); const pt = c && c.lista.find(x => x.id === el.dataset.parte); if (!pt) return; const ic = await elegirIcono(pt.icono); if (ic === undefined) return; pt.icono = ic; guardarLuego(c.colec, c.root); render(); },
+
+  'pk-elegir'(el) { resolverPicker(el.dataset.id); },
+  'pk-quitar'() { resolverPicker(null); },
+  'pk-nueva'() {
+    if (!UI.pk) return; const nombre = UI.pk.q.trim(); if (!nombre) return;
+    const p = { id: 'p-' + uid(), nombre, foto: '', grupo: '', nota: '' };
+    S.personas.push(p); guardarLuego('personas', p); toast(`Se agregó a ${nombre}. Su foto la puedes subir en Personas.`); resolverPicker(p.id);
+  },
+
+  'persona-nueva'() { sheetEditarPersona(null); },
+  'persona-editar'(el) { sheetEditarPersona(el.dataset.id); },
+  'persona-guardar'() {
+    const d = UI.dp; if (!d) return;
+    d.nombre = (d.nombre || '').trim(); if (!d.nombre) return toast('Escribe el nombre.');
+    let obj = persona(d.id);
+    if (obj) Object.assign(obj, d); else { obj = { ...d }; S.personas.push(obj); }
+    guardarLuego('personas', obj); cerrarSheet(); render(); toast('Guardado');
+  },
+  async 'persona-borrar'() {
+    const d = UI.dp; if (!d) return; const id = d.id; const nombre = d.nombre;
+    if (!(await confirmar(`¿Eliminar a ${nombre}? Sus lugares en los programas quedarán vacíos.`))) return;
+    S.personas = S.personas.filter(p => p.id !== id); pendientes.delete(id); await borrarRegistro(id); render();
+  },
+  'foto-quitar'() { if (UI.dp) { UI.dp.foto = ''; pintarSheet(); } },
+
+  'formato-nuevo'() { sheetNuevoFormato(); },
+  'formato-crear'(el) {
+    const tipo = el.dataset.tipo; const sec = { id: uid(), nombre: 'Sección', color: '#2C52B0', icono: '📖' };
+    const f = { id: 'f-' + uid(), nombre: tipo === 'reunion' ? 'Nueva reunión' : 'Nuevo formato', icono: tipo === 'reunion' ? '📖' : '📋', color: '#2C52B0', tipo,
+      orden: Math.max(0, ...S.formatos.map(x => x.orden || 0)) + 1, dias: [5, 6], etiquetaTurno: '',
+      roles: tipo === 'reunion' ? [] : [{ id: uid(), nombre: 'Asignación', icono: '⭐', modo: 'personas', cantidad: 1, opciones: [], paraPersona: '', turnos: false }],
+      secciones: tipo === 'reunion' ? [sec] : [],
+      partes: tipo === 'reunion' ? [{ id: uid(), seccionId: sec.id, icono: '🎵', titulo: 'Canción y oración', tema: '', minutos: 5, cantidad: 1, etiquetas: '' }] : [] };
+    S.formatos.push(f); guardarLuego('formatos', f); cerrarSheet(); location.hash = '#/editor/formato/' + f.id;
+  },
+  'formato-subir'(el) { moverFormato(el.dataset.id, -1); },
+  'formato-bajar'(el) { moverFormato(el.dataset.id, 1); },
+  async 'icono-formato'() { const f = formato(UI.editId); if (!f) return; const ic = await elegirIcono(f.icono); if (ic === undefined) return; f.icono = ic; guardarLuego('formatos', f); render(); },
+  'color-formato'(el) { const f = formato(UI.editId); if (!f) return; f.color = el.dataset.v; guardarLuego('formatos', f); render(); },
+  dia(el) { const f = formato(UI.editId); if (!f) return; const d = Number(el.dataset.d); f.dias = f.dias || []; f.dias = f.dias.includes(d) ? f.dias.filter(x => x !== d) : [...f.dias, d]; guardarLuego('formatos', f); render(); },
+  'rol-agregar'() { const f = formato(UI.editId); if (!f) return; f.roles = f.roles || []; f.roles.push({ id: uid(), nombre: '', icono: '⭐', modo: 'personas', cantidad: 1, opciones: [], paraPersona: '', turnos: false }); guardarLuego('formatos', f); render(); },
+  'rol-subir'(el) { const x = rolDe(el); if (!x) return; mover(x.f.roles, x.f.roles.indexOf(x.r), -1); guardarLuego('formatos', x.f); render(); },
+  'rol-bajar'(el) { const x = rolDe(el); if (!x) return; mover(x.f.roles, x.f.roles.indexOf(x.r), 1); guardarLuego('formatos', x.f); render(); },
+  async 'rol-quitar'(el) { const x = rolDe(el); if (!x) return; if (!(await confirmar('¿Quitar esta asignación del formato? Lo ya asignado dejará de mostrarse.', 'Quitar'))) return; x.f.roles = x.f.roles.filter(r => r !== x.r); guardarLuego('formatos', x.f); render(); },
+  'rol-mas'(el) { const x = rolDe(el); if (!x) return; x.r.cantidad = Math.min(12, (Number(x.r.cantidad) || 1) + 1); guardarLuego('formatos', x.f); render(); },
+  'rol-menos'(el) { const x = rolDe(el); if (!x) return; x.r.cantidad = Math.max(1, (Number(x.r.cantidad) || 1) - 1); guardarLuego('formatos', x.f); render(); },
+  async 'rol-para'(el) {
+    const x = rolDe(el); if (!x) return;
+    const r = await elegirPersona({ titulo: '¿Para quién es esta asignación?', actual: x.r.paraPersona || null });
+    if (r === undefined) return;
+    x.r.paraPersona = r || '';
+    if (r && (!x.r.nombre || x.r.nombre === 'Asignación')) x.r.nombre = persona(r).nombre;
+    guardarLuego('formatos', x.f); render();
+  },
+  'rol-usar-grupos'(el) { const x = rolDe(el); if (!x) return; x.r.opciones = [...S.ajustes.grupos]; guardarLuego('formatos', x.f); render(); },
+  async 'icono-rol'(el) { const x = rolDe(el); if (!x) return; const ic = await elegirIcono(x.r.icono); if (ic === undefined) return; x.r.icono = ic; guardarLuego('formatos', x.f); render(); },
+  'seccion-agregar'() { const f = formato(UI.editId); if (!f) return; f.secciones = f.secciones || []; f.secciones.push({ id: uid(), nombre: '', color: COLORES[f.secciones.length % COLORES.length], icono: '📖' }); guardarLuego('formatos', f); render(); },
+  async 'seccion-quitar'(el) {
+    const f = formato(UI.editId); if (!f) return;
+    if (!(await confirmar('¿Quitar esta sección? Sus partes quedarán sin sección.', 'Quitar'))) return;
+    const id = el.dataset.sec; f.secciones = (f.secciones || []).filter(s => s.id !== id);
+    (f.partes || []).forEach(p => { if (p.seccionId === id) p.seccionId = ''; });
+    guardarLuego('formatos', f); render();
+  },
+  'color-seccion'(el) { const f = formato(UI.editId); const s = f && (f.secciones || []).find(x => x.id === el.dataset.sec); if (!s) return; s.color = el.dataset.v; guardarLuego('formatos', f); render(); },
+  async 'icono-seccion'(el) { const f = formato(UI.editId); const s = f && (f.secciones || []).find(x => x.id === el.dataset.sec); if (!s) return; const ic = await elegirIcono(s.icono); if (ic === undefined) return; s.icono = ic; guardarLuego('formatos', f); render(); },
+  async 'borrar-formato'() {
+    const f = formato(UI.editId); if (!f) return;
+    const progs = S.programas.filter(p => p.formatoId === f.id);
+    if (!(await confirmar(progs.length ? `¿Eliminar "${f.nombre}" y sus ${progs.length} programas? No se puede deshacer.` : `¿Eliminar "${f.nombre}"?`))) return;
+    S.formatos = S.formatos.filter(x => x.id !== f.id); S.programas = S.programas.filter(p => p.formatoId !== f.id);
+    pendientes.delete(f.id); progs.forEach(p => pendientes.delete(p.id));
+    await borrarRegistro(f.id); for (const p of progs) await borrarRegistro(p.id);
+    location.hash = '#/editor/formatos';
+  },
+
+  'ic-elegir'(el) { resolverIcono(el.dataset.v); },
+  'ic-usar-texto'() { const v = ($('#ic-texto') || {}).value; if (v && v.trim()) resolverIcono(v.trim()); else toast('Escribe o pega un emoji.'); },
+  'cf-si'() { if (!UI.cf) return; const r = UI.cf; UI.cf = null; cerrarSheet(); r(true); },
+
+  exportar() {
+    const json = JSON.stringify({ app: 'agenda-senas', version: 1, exportado: new Date().toISOString(), personas: S.personas, formatos: S.formatos, programas: S.programas, ajustes: S.ajustes });
+    abrirSheet(() => `<h2 class="sheet-tit">Respaldo</h2><p class="ayuda">Guarda este texto en un lugar seguro. Con él puedes recuperar todo o pasarlo a la versión conectada.</p>
+      <textarea id="exp" readonly aria-label="Respaldo">${esc(json)}</textarea>
+      <div class="acciones"><button class="btn" data-act="copiar-export">Copiar</button><button class="btn" data-act="descargar-export">Descargar archivo</button><button class="btn primario" data-act="cerrar">Listo</button></div>`);
+  },
+  async 'copiar-export'() {
+    const t = $('#exp'); if (!t) return;
+    try { await navigator.clipboard.writeText(t.value); toast('Copiado'); }
+    catch (e) { t.focus(); t.select(); try { document.execCommand('copy'); toast('Copiado'); } catch (e2) { toast('Selecciona el texto y cópialo manualmente.'); } }
+  },
+  'descargar-export'() {
+    const t = $('#exp'); if (!t) return;
+    try { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([t.value], { type: 'application/json' })); a.download = `respaldo-programas-${hoyISO()}.json`; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); }
+    catch (e) { toast('No se pudo descargar aquí. Usa Copiar.'); }
+  },
+  importar() {
+    abrirSheet(() => `<h2 class="sheet-tit">Importar respaldo</h2><p class="ayuda">Pega el texto del respaldo o elige el archivo. Esto reemplaza todos los datos actuales.</p>
+      <label class="btn ancho" style="margin:0 0 10px">Elegir archivo<input type="file" accept=".json,application/json,text/plain" data-change="imp-archivo" hidden></label>
+      <textarea id="imp" placeholder="Pega aquí el respaldo" aria-label="Respaldo a importar"></textarea>
+      <div class="acciones"><button class="btn" data-act="cerrar">Cancelar</button><button class="btn primario" data-act="importar-ok">Importar</button></div>`);
+  },
+  async 'importar-ok'() {
+    const txt = ($('#imp') || {}).value || '';
+    let d; try { d = JSON.parse(txt); } catch (e) { return toast('El texto no es un respaldo válido.'); }
+    if (!d || !Array.isArray(d.personas) || !Array.isArray(d.formatos) || !Array.isArray(d.programas)) return toast('Al respaldo le faltan datos.');
+    if (!(await confirmar('Esto reemplaza todos los datos actuales. ¿Continuar?', 'Reemplazar'))) return;
+    await reemplazar(normalizar(d)); toast('Respaldo importado');
+  },
+  async 'cargar-ejemplo'() {
+    if (!(await confirmar('Esto reemplaza todos los datos actuales con el ejemplo de octubre 2026. ¿Continuar?', 'Reemplazar'))) return;
+    await reemplazar(normalizar(datosEjemplo())); toast('Ejemplo cargado');
+  },
+  async salir() { await Store.salir(); location.hash = '#/'; await recargar(); }
+};
+async function reemplazar(d) {
+  try { pendientes.clear(); clearTimeout(tGuardar); await Store.reemplazarTodo(d); asignar(d); UI.fecha = null; UI.formatoLector = null; UI.programaLector = null; render(); }
+  catch (e) { console.error(e); toast('No se pudieron reemplazar los datos.'); }
+}
+function moverFormato(id, d) {
+  const fs = ordenados(S.formatos); const i = fs.findIndex(f => f.id === id); const j = i + d;
+  if (i < 0 || j < 0 || j >= fs.length) return;
+  [fs[i], fs[j]] = [fs[j], fs[i]];
+  fs.forEach((f, k) => { if (f.orden !== k + 1) { f.orden = k + 1; guardarLuego('formatos', f); } });
+  render();
+}
+
+const ENTRADAS = {
+  'buscar-lector'(el) { UI.buscar = el.value; const g = $('#rejilla'); if (g) g.innerHTML = rejillaPersonas(UI.buscar, 'ver-persona'); },
+  'buscar-ed'(el) { UI.buscar = el.value; const g = $('#rejilla'); if (g) g.innerHTML = rejillaPersonas(UI.buscar, 'persona-editar', extraEd); },
+  'buscar-picker'(el) { if (!UI.pk) return; UI.pk.q = el.value; const g = $('#rejilla-pk'); if (g) g.innerHTML = rejillaPicker(); }
+};
+const CAMBIOS = {
+  'foto-persona'(el) { subirFotoPersona(el); },
+  async 'ic-subir'(el) {
+    const file = el.files && el.files[0]; if (!file) return;
+    try { const blob = await comprimir(file, 160, 'image/png'); const url = await Store.subirFoto(blob); resolverIcono(url); }
+    catch (e) { console.error(e); toast('No se pudo subir la imagen.'); }
+  },
+  'imp-archivo'(el) { const file = el.files && el.files[0]; if (!file) return; const r = new FileReader(); r.onload = () => { const t = $('#imp'); if (t) t.value = r.result; }; r.readAsText(file); }
+};
+
+/* ===================== Render y rutas ===================== */
+function ruta() {
+  const [a, b, c] = location.hash.replace(/^#\/?/, '').split('/');
+  if (a === 'editor') return { editor: true, vista: b || 'programas', id: c ? decodeURIComponent(c) : '' };
+  return { editor: false, vista: a || 'reuniones' };
+}
+function cabecera(r) {
+  const a = S.ajustes;
+  const der = r.editor
+    ? `<span id="estado-guardado" class="estado" aria-live="polite">${esc(UI.guardado)}</span><a class="btn chico" href="#/">${ICON.ojo}Ver</a>`
+    : `<button class="btn chico" data-act="letra" aria-label="${UI.letra === 'grande' ? 'Letra normal' : 'Letra más grande'}">${UI.letra === 'grande' ? 'A−' : 'A+'}</button><a class="btn chico icono-solo" href="#/editor" aria-label="Editar programas">${ICON.lapiz}</a>`;
+  return `<header class="top"><div class="marca"><b>${esc(a.congregacion)}</b><span>${r.editor ? 'Editor de programas' : esc(a.subtitulo)}</span></div><div class="top-acc">${der}</div></header>`;
+}
+function navegacion(r) {
+  if (UI.cargando || (r.editor && Store.nube && !Store.editor)) return '';
+  const items = r.editor
+    ? [['programas', '#/editor', 'Programas', ICON.cal], ['personas', '#/editor/personas', 'Personas', ICON.gente], ['formatos', '#/editor/formatos', 'Formatos', ICON.molde], ['ajustes', '#/editor/ajustes', 'Ajustes', ICON.ajustes]]
+    : [['reuniones', '#/', 'Reuniones', ICON.cal], ['programas', '#/programas', 'Programas', ICON.cuadros], ['personas', '#/personas', 'Personas', ICON.gente]];
+  const act = r.editor ? ({ programa: 'programas', formato: 'formatos' }[r.vista] || r.vista) : r.vista;
+  return `<nav class="nav" aria-label="Secciones">${items.map(([k, h, t, i]) => `<a href="${h}" class="${k === act ? 'on' : ''}" ${k === act ? 'aria-current="page"' : ''}>${i}<span>${t}</span></a>`).join('')}</nav>`;
+}
+function vistaEditor(r) {
+  switch (r.vista) {
+    case 'programa': return edPrograma(r.id);
+    case 'personas': return edPersonas();
+    case 'formatos': return edFormatos();
+    case 'formato': return edFormato(r.id);
+    case 'ajustes': return edAjustes();
+    default: return edProgramas();
+  }
+}
+function vistaLector(r) { if (r.vista === 'programas') return lectorProgramas(); if (r.vista === 'personas') return lectorPersonas(); return lectorReuniones(); }
+function render() {
+  const r = ruta();
+  let cuerpo;
+  if (UI.cargando) cuerpo = '<div class="cargando">Cargando programas…</div>';
+  else if (UI.error) cuerpo = vacio(UI.error, '<button class="btn" data-act="reintentar">Intentar de nuevo</button>');
+  else if (r.editor) cuerpo = (Store.nube && !Store.editor) ? vistaLogin() : vistaEditor(r);
+  else cuerpo = vistaLector(r);
+  $('#app').innerHTML = cabecera(r) + `<main class="main ${r.editor ? 'ed' : ''}">${cuerpo}</main>` + navegacion(r);
+  const tira = $('#tira'); const on = tira && tira.querySelector('.on');
+  if (tira && on) tira.scrollLeft = on.offsetLeft - tira.clientWidth / 2 + on.offsetWidth / 2;
+}
+function aplicarLetra() { document.documentElement.classList.toggle('letra-grande', UI.letra === 'grande'); }
+function toast(msg) {
+  let t = $('#toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('ver'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('ver'), 2800);
+}
+async function recargar() {
+  UI.cargando = true; UI.error = ''; render();
+  try { asignar(await Store.cargar()); }
+  catch (e) { console.error(e); UI.error = 'No se pudieron cargar los programas. Revisa tu conexión e intenta de nuevo.'; }
+  UI.cargando = false; render();
+}
+
+/* ===================== Eventos ===================== */
+document.addEventListener('click', async ev => {
+  const capa = $('#capa');
+  if (capa && ev.target === capa) { cerrarSheet(); return; }
+  const el = ev.target.closest('[data-act]'); if (!el) return;
+  const fn = A[el.dataset.act]; if (!fn) return;
+  ev.preventDefault();
+  try { await fn(el, ev); } catch (e) { console.error(e); toast('Algo falló: ' + (e.message || e)); }
+});
+document.addEventListener('keydown', ev => {
+  if (ev.key === 'Escape' && UI.sheet) { cerrarSheet(); return; }
+  if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.matches('figure[data-act]')) { ev.preventDefault(); ev.target.click(); }
+});
+document.addEventListener('input', ev => {
+  const el = ev.target;
+  if (el.dataset.input) { const f = ENTRADAS[el.dataset.input]; if (f) f(el); return; }
+  if (el.dataset.np) { UI.np[el.dataset.np] = el.value; return; }
+  if (el.dataset.bind && el.type !== 'checkbox' && el.tagName !== 'SELECT' && el.type !== 'date') aplicarBind(el, false);
+});
+document.addEventListener('change', ev => {
+  const el = ev.target;
+  if (el.dataset.change) { const f = CAMBIOS[el.dataset.change]; if (f) f(el); return; }
+  if (el.dataset.np) { UI.np[el.dataset.np] = el.value; if (el.tagName === 'SELECT') pintarSheet(); return; }
+  if (el.dataset.bind) aplicarBind(el, el.hasAttribute('data-rerender'));
+});
+document.addEventListener('submit', async ev => {
+  const fm = ev.target; if (fm.dataset.form !== 'login') return;
+  ev.preventDefault();
+  const btn = fm.querySelector('[type=submit]'); btn.disabled = true; btn.textContent = 'Entrando…';
+  const campos = fm.elements;
+  try { await Store.entrar(campos.clave.value, campos.recordar.checked); await guardarYa(); await recargar(); toast('Listo, ya puedes editar.'); }
+  catch (e) { console.error(e); toast(e.status === 401 ? 'Contraseña incorrecta.' : e.message); btn.disabled = false; btn.textContent = 'Entrar'; const c = campos.clave; if (c) { c.value = ''; c.focus(); } }
+});
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') guardarYa(); });
+window.addEventListener('hashchange', () => { if (UI.sheet) cerrarSheet(); render(); window.scrollTo(0, 0); });
+
+(async function arrancar() {
+  try { UI.letra = localStorage.getItem('agenda-letra') || 'normal'; } catch (e) { }
+  aplicarLetra(); render();
+  await Store.iniciar();
+  await recargar();
+})();
+</script>
+</body>
+</html>
